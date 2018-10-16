@@ -1,0 +1,4 @@
+bin/app/node_modules/*
+.idea/
+local/
+metadata/local.meta
