@@ -1,0 +1,10 @@
+<dashboard script="setup.js" stylesheet="setup.css" hideAppBar="true" isDashboard="false" hideEdit="false">
+  <label></label>
+  <row>
+    <panel id="MarvelConfig">
+      <html>
+        <div class="container" id="MarvelIndexWrapper"/>
+      </html>
+    </panel>
+  </row>
+</dashboard>

@@ -24,13 +24,15 @@
                 description: "Comic character such as The Incredible Hulk",
                 requiredOnCreate: true,
                 requiredOnEdit: false
-            }),
+            })
         ];
         return scheme;
     };
 
     exports.validateInput = function (definition, done) {
         const character = definition.parameters.character;
+
+        Logger.info('marvel characters definition.sessionKey ', definition.metadata["session_key"]);
 
         Logger.info("character submitted for validation: ", character);
 
@@ -39,14 +41,11 @@
             privateKey: 'a37b4256130a08743953e48d28adf5f32f8b4c9c'
         });
 
-        Logger.info("Marvel: ", marvel);
-
         marvel.characters
             .name(character)
             .get(function(err, res) {
                 if (err) {
                     Logger.error(name, "A validation error occurred: " + err.message);
-                    callback(err);
                     return;
                 }
                 else {
@@ -76,24 +75,23 @@
         marvel.characters
             .name(character).get(function (err, res) {
             if (err) {
-                Logger.error(name, "An error occured: " + err.message);
-                callback(err);
+                Logger.error(name, "An error occurred: " + err.message);
                 return;
             }
 
-            const checkpointFilePath = path.join(checkpointDir, character + ".txt");
+            const checkpointFile = path.join(checkpointDir, character + ".txt");
             let checkpointFileNewContents = "";
             let checkpointFileContents = "";
 
             Logger.info(name, "Retrieving Marvel character information: " + res);
 
             try {
-                checkpointFileContents = utils.readFile("", checkpointFilePath);
+                checkpointFileContents = utils.readFile("", checkpointFile);
             }
             catch (e) {
                 // If there's an exception, assume the file doesn't exist
                 // Create the checkpoint file with an empty string
-                fs.appendFileSync(checkpointFilePath, "");
+                fs.appendFileSync(checkpointFile, "");
             }
 
             for (let i = 0; i < res.length && !errorFound; i++) {
@@ -101,10 +99,10 @@
                 const json = {
                     id: res[i].id,
                     name: res[i].name,
-                    description: res[i].description,
                     modified: res[i].modified,
-                    thumbnail_path: res[i].thumbnail_path,
-                    thumbnail_extension: res[i].thumbnail_extension
+                    description: res[i].description,
+                    thumbnail_path: res[i].thumbnail.path,
+                    thumbnail_extension: res[i].thumbnail.extension
                 };
 
                 Logger.info(name, "Data returned for " + character + ": " + json);
@@ -135,15 +133,18 @@
                 } else {
                     alreadyIndexed++;
                 }
+
+                fs.appendFileSync(checkpointFile, checkpointFileNewContents); // Write to the checkpoint file
+
+                if (alreadyIndexed > 0) {
+                    Logger.info(name, "Skipped " + alreadyIndexed.toString() + " already indexed the character " + character);
+                }
+
+                alreadyIndexed = 0;
+
             }
 
-            fs.appendFileSync(checkpointFilePath, checkpointFileNewContents); // Write to the checkpoint file
 
-            if (alreadyIndexed > 0) {
-                Logger.info(name, "Skipped " + alreadyIndexed.toString() + " already indexed the character" + character);
-            }
-
-            alreadyIndexed = 0;
         });
 
     };

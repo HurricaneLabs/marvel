@@ -1,0 +1,69 @@
+/* Setup Page Styles */
+.dashboard-panel {
+    background: none !important;
+}
+#AWSComponentsWrapper {
+    margin: 0 auto;
+    background: white;
+    padding: 20px 40px 20px 20px;
+    width: 500px;
+}
+textarea {
+    width: 100%
+}
+input[type="text"], input[type="password"], input[type="email"] {
+    width: 96%;
+}
+.control-inline input, .control-inline label {
+    display: inline-block;
+}
+.control-inline input {
+    margin: -3px 0 0;
+}
+.control-inline label {
+    padding: 10px 0;
+}
+.success {
+    margin-left: -20px;
+    width: 530px;
+    padding: 13px 10px 5px 20px;
+    margin-bottom: 20px;
+    background: #49bfa0;
+    color: #fff;
+}
+.settingUp {
+    margin-left: -20px;
+    width: 530px;
+    padding: 13px 10px 5px 20px;
+    margin-bottom: 20px;
+    background: #e49100;
+    color: #fff;
+}
+.failure {
+    margin-left: -20px;
+    width: 530px;
+    padding: 13px 10px 5px 20px;
+    margin-bottom: 20px;
+    background: #bd3232;
+    color: #fff;
+}
+.notice {
+    margin-left: -20px;
+    width: 530px;
+    padding: 13px 10px 12px 20px;
+    margin-bottom: 20px;
+    background: #ffbf1f;
+    color: #000000;
+}
+.notice a {
+    color: #000;
+    text-decoration: underline;
+}
+.input-error {
+    color: #bd3232;
+    display: block;
+    padding: 0 0 10px;
+}
+.red-border {
+    border: 1px solid #bd3232 !Important;
+}

@@ -1,0 +1,45 @@
+<div id="MarvelSettings">
+    <h2>Marvel Setup</h2>
+    <div class="failure" style="display:none">
+        <p>Unable to update. Reason: <%- error %></p>
+    </div>
+    <div class="success" style="display:none">
+        <p>Your settings were successfully updated.</p>
+    </div>
+    <div id="setupWrapper">
+	    <form id="setupForm" class="form-line" autocomplete="off">
+            <% if(public_key==="<encrypted>") { %>
+                <div class="control shared-controls-textcontrol control-default">
+                    <label for="public_key">Public Key*</label>
+                    <input type="password" disabled="true" class="form-control mb-6 mr-sm-2 mb-sm-0"
+                           id="public_key" name="public_key" placeholder="Public Key" value="<%- public_key %>">
+                </div>
+            <% } else { %>
+                <div class="control shared-controls-textcontrol control-default">
+                    <label for="public_key">Public Key*</label>
+                    <input type="text" class="form-control mb-6 mr-sm-2 mb-sm-0"
+                           id="public_key" name="public_key" placeholder="Public Key" value="<%- public_key %>">
+                </div>
+            <% } %>
+            <% if(private_key==="<encrypted>") { %>
+                <div class="control shared-controls-textcontrol control-default">
+                    <label for="private_key">Private Key*</label>
+                    <input type="password" disabled="true" class="form-control mb-6 mr-sm-2 mb-sm-0"
+                           id="private_key" name="private_key" placeholder="Private Key" value="<%- private_key %>">
+                </div>
+            <% } else { %>
+                <div class="control shared-controls-textcontrol control-default">
+                    <label for="private_key">Private Key*</label>
+                    <input type="text" class="form-control mb-6 mr-sm-2 mb-sm-0"
+                           id="private_key" name="private_key" placeholder="Secret Key" value="<%- private_key %>">
+                </div>
+            <% } %>
+            <% if(is_configured) { %>
+            <button type="submit" id="resetData" class="btn btn-primary">Reset</button>
+            <% } else { %>
+            <button type="submit" id="submitData" class="btn btn-primary">Submit</button>
+            <% } %>
+        </form>
+        <p class="help-block small">* required.</p>
+    </div>
+</div>

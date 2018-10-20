@@ -25,14 +25,31 @@
                 requiredOnCreate: true,
                 requiredOnEdit: false
             }),
+            new Argument({
+                name: "result_limit",
+                dataType: Argument.dataTypeNumber,
+                description: "Limit the results returned (Minimum: 1, Maximum: 100)",
+                requiredOnCreate: true,
+                requiredOnEdit: false
+            }),
         ];
+
+        Logger.info('Comic Scheme: ', scheme);
+
         return scheme;
     };
 
     exports.validateInput = function (definition, done) {
         const comic = definition.parameters.comic;
+        const result_limit = definition.parameters.result_limit;
 
-        Logger.info("comic submitted for validation: ", comic);
+        if (result_limit < 1) {
+            done(new Error("The minimum amount of results allowed is 1."));
+        }
+
+        if (result_limit > 100) {
+            done(new Error("The maximum amount of results allowed is 100."));
+        }
 
         const marvel = new Marvel({
             publicKey: '6e34f83f47f74a36e2a46aa0d2ce760e',
@@ -52,7 +69,7 @@
                 else {
                     Logger.info("Response: ", res);
                     if (res.length === 0) {
-                        done(new Error("No results returned for that series, please try again."));
+                        done(new Error("No results returned for that comic, please try again."));
                     } else {
                         done();
                     }
@@ -63,48 +80,52 @@
     exports.streamEvents = function (name, singleInput, eventWriter, done) {
         const checkpointDir = this._inputDefinition.metadata["checkpoint_dir"];
         const comic = singleInput.comic;
+        const result_limit = singleInput.result_limit;
 
-            const marvel = new Marvel({
-                publicKey: '6e34f83f47f74a36e2a46aa0d2ce760e',
-                privateKey: 'a37b4256130a08743953e48d28adf5f32f8b4c9c'
-            });
+        const marvel = new Marvel({
+            publicKey: '6e34f83f47f74a36e2a46aa0d2ce760e',
+            privateKey: 'a37b4256130a08743953e48d28adf5f32f8b4c9c'
+        });
 
         let alreadyIndexed = 0;
         let errorFound = false;
         let working = true;
 
         marvel.comics
-            .title(comic).get(function (err, res) {
+            .title(comic)
+            .limit(result_limit)
+            .get(function (err, res) {
             if (err) {
-                Logger.error(name, "An error occured: " + err.message);
+                Logger.error(name, "An error occurred: " + err.message);
                 callback(err);
                 return;
             }
 
-            const checkpointFilePath = path.join(checkpointDir, comic + ".txt");
+            const checkpointFile = path.join(checkpointDir, comic + ".txt");
             let checkpointFileNewContents = "";
             let checkpointFileContents = "";
 
             Logger.info(name, "Retrieving Marvel comic information: " + res);
 
             try {
-                checkpointFileContents = utils.readFile("", checkpointFilePath);
+                checkpointFileContents = utils.readFile("", checkpointFile);
             }
             catch (e) {
                 // If there's an exception, assume the file doesn't exist
                 // Create the checkpoint file with an empty string
-                fs.appendFileSync(checkpointFilePath, "");
+                fs.appendFileSync(checkpointFile, "");
             }
 
             for (let i = 0; i < res.length && !errorFound; i++) {
 
                 const json = {
                     id: res[i].id,
-                    name: res[i].name,
-                    description: res[i].description,
+                    title: res[i].title,
                     modified: res[i].modified,
-                    thumbnail_path: res[i].thumbnail_path,
-                    thumbnail_extension: res[i].thumbnail_extension
+                    issueNumber: res[i].issueNumber,
+                    description: res[i].description,
+                    thumbnail_path: res[i].thumbnail.path,
+                    thumbnail_extension: res[i].thumbnail.extension
                 };
 
                 Logger.info(name, "Data returned for " + comic + ": " + json);
@@ -121,7 +142,7 @@
                         eventWriter.writeEvent(event);
 
                         checkpointFileNewContents += res[i].id += res[i].modified + "\n"; // Append this commit to the string we'll write at the end
-                        Logger.info(name, "Added a new comic: " + res[i].name);
+                        Logger.info(name, "Added a new comic: " + res[i].title);
                     }
                     catch (e) {
                         errorFound = true;
@@ -135,15 +156,16 @@
                 } else {
                     alreadyIndexed++;
                 }
+
+                fs.appendFileSync(checkpointFile, checkpointFileNewContents); // Write to the checkpoint file
+
+                if (alreadyIndexed > 0) {
+                    Logger.info(name, "Skipped " + alreadyIndexed.toString() + " already indexed the comic" + comic);
+                }
+
+                alreadyIndexed = 0;
+
             }
-
-            fs.appendFileSync(checkpointFilePath, checkpointFileNewContents); // Write to the checkpoint file
-
-            if (alreadyIndexed > 0) {
-                Logger.info(name, "Skipped " + alreadyIndexed.toString() + " already indexed the comic" + comic);
-            }
-
-            alreadyIndexed = 0;
         });
 
     };
