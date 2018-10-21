@@ -7,9 +7,8 @@ define([
     var SettingsModel = Backbone.Model.extend({
 
         defaults: {
-            access_key: "",
-            secret_key: "",
-            region: "",
+            public_key: "",
+            private_key: "",
             success: false,
             failure: false,
             error: "",

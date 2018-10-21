@@ -97,7 +97,7 @@ define([
 
     var EncryptedCredential = SplunkDBaseModel.extend({
         //overriding this to ensure it goes it the correct app context
-        url: "/servicesNS/nobody/AWS_Trusted_Advisor_for_Splunk/storage/passwords/",
+        url: "/servicesNS/nobody/marvel/storage/passwords/",
 	    initialize: function() {
 	    	SplunkDBaseModel.prototype.initialize.apply(this, arguments);
 	    }
@@ -105,7 +105,7 @@ define([
 
 	var EncryptedCredentials = SplunkDsBaseCollection.extend({
         //overriding this to ensure it goes it the correct app context
-	    url: "/servicesNS/nobody/AWS_Trusted_Advisor_for_Splunk/storage/passwords/",
+	    url: "/servicesNS/nobody/marvel/storage/passwords/",
         model: EncryptedCredential,
 	    initialize: function() {
 	      SplunkDsBaseCollection.prototype.initialize.apply(this, arguments);
@@ -353,7 +353,7 @@ define([
 
             // Fetch it
             this.encrypted_credential.fetch({
-                url: splunkd_utils.fullpath('/servicesNS/nobody/AWS_Trusted_Advisor_for_Splunk/storage/passwords/' + encodeURIComponent(stanza)),
+                url: splunkd_utils.fullpath('/servicesNS/nobody/marvel/storage/passwords/' + encodeURIComponent(stanza)),
                 success: function (model, response, options) {
                     console.info("Successfully retrieved the encrypted credential");
                     promise.resolve(model);

@@ -48,8 +48,8 @@ define([
         events: {
             "click #submitData" : "submitData",
             "click #resetData" : "resetData",
-            "focusout #public_key" : "setAccessKey",
-            "focusout #private_key" : "setSecretKey",
+            "focusout #public_key" : "setPublicKey",
+            "focusout #private_key" : "setPrivateKey",
         },
 
         initialize: function() {
@@ -81,8 +81,8 @@ define([
             $("input").removeClass("red-border");
 
             fields = {
-                'public_key' : [this.model.get("public_key"), 'You must provide an Access key.'],
-                'private_key' : [this.model.get("private_key"), 'You must provide a Secret key.'],
+                'public_key' : [this.model.get("public_key"), 'You must provide an public key.'],
+                'private_key' : [this.model.get("private_key"), 'You must provide a private key.'],
             };
 
             var validateFields = function() {
@@ -173,13 +173,13 @@ define([
 
         },
 
-        setAccessKey: function() {
+        setPublicKey: function() {
 
             this.model.set({ "public_key" :  $(document).find('#public_key').val() }, { silent : true });
 
         },
 
-        setSecretKey: function() {
+        setPrivateKey: function() {
 
             this.model.set({ "private_key" :  $(document).find('#private_key').val() }, { silent : true });
 
