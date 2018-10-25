@@ -1,4 +1,4 @@
-<dashboard script="setup.js" stylesheet="setup.css" hideAppBar="true" isDashboard="false" hideEdit="false">
+<dashboard script="setup.js" stylesheet="setup.css" hideAppBar="true" isDashboard="false" hideEdit="true">
   <label></label>
   <row>
     <panel id="MarvelConfig">

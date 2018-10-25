@@ -346,7 +346,6 @@ define([
 
             // Get a promise ready
         	var promise = jQuery.Deferred();
-        	var promise = jQuery.Deferred();
 
             // Make an instance to fetch into
 	        this.encrypted_credential = new EncryptedCredential();

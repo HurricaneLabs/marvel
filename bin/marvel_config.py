@@ -14,12 +14,13 @@ Description:  This skeleton python script handles the parameters in the configur
       handleEdit method: controls the parameters and saves the values
       corresponds to handleractions = edit in restmap.conf
 
-"""  # pylint: disable=pointless-string-statement
+"""
 
 
 class MarvelConfig(admin.MConfigHandler):
     """ MarvelConfig config handler"""
-    def setup(self):  # pylint: disable=no-self-use
+
+    def setup(self):
         """
         Placeholder; does nothing
         :return:
@@ -38,7 +39,7 @@ class MarvelConfig(admin.MConfigHandler):
         confInfo['config']['public_key'] = public_key
         confInfo['config']['private_key'] = private_key
 
-    def handleEdit(self, confInfo):  # pylint: disable=unused-argument, no-self-use
+    def handleEdit(self, confInfo):
         """Handle edit function"""
         return
 

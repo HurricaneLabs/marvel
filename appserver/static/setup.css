@@ -29,14 +29,8 @@ input[type="text"], input[type="password"], input[type="email"] {
     padding: 13px 10px 5px 20px;
     margin-bottom: 20px;
     background: #49bfa0;
-    color: #fff;
 }
-.settingUp {
-    margin-left: -20px;
-    width: 530px;
-    padding: 13px 10px 5px 20px;
-    margin-bottom: 20px;
-    background: #e49100;
+.success p {
     color: #fff;
 }
 .failure {

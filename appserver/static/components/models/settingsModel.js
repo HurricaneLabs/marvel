@@ -1,7 +1,6 @@
 define([
-    'underscore',
     'backbone',
-], function (_, Backbone) {
+], function (Backbone) {
     "use strict";
 
     var SettingsModel = Backbone.Model.extend({
@@ -11,7 +10,6 @@ define([
             private_key: "",
             success: false,
             failure: false,
-            error: "",
             is_configured: false,
             reset: false
         }
