@@ -44,9 +44,9 @@ label {
     -webkit-transform-origin: 100% 0;
     -ms-transform-origin: 100% 0;
     transform-origin: 100% 0;
-    -webkit-transform: skew(-15deg);
-    -ms-transform: skew(-15deg);
-    transform: skew(-15deg);
+    -webkit-transform: skew(-5deg);
+    -ms-transform: skew(-5deg);
+    transform: skew(-5deg);
 }
 .panel-body #description h2 {
     color: white;
@@ -55,9 +55,9 @@ label {
     -webkit-transform-origin: 100% 0;
     -ms-transform-origin: 100% 0;
     transform-origin: 100% 0;
-    -webkit-transform: skew(15deg);
-    -ms-transform: skew(15deg);
-    transform: skew(15deg);
+    -webkit-transform: skew(5deg);
+    -ms-transform: skew(5deg);
+    transform: skew(5deg);
 }
 .panel-body #description p {
     color: white;
@@ -66,9 +66,9 @@ label {
     -webkit-transform-origin: 100% 0;
     -ms-transform-origin: 100% 0;
     transform-origin: 100% 0;
-    -webkit-transform: skew(15deg);
-    -ms-transform: skew(15deg);
-    transform: skew(15deg);
+    -webkit-transform: skew(5deg);
+    -ms-transform: skew(5deg);
+    transform: skew(5deg);
 }
 #other_characters {
     display: none;
@@ -90,27 +90,4 @@ label {
 }
 #character_detail {
     display: none;
-}
-#loading {
-    background: #eb2328;
-    width: 140px;
-    margin: 0 auto;
-    padding: 9px 0 1px;
-    display: block;
-    -webkit-transform-origin: 100% 0;
-    -ms-transform-origin: 100% 0;
-    transform-origin: 100% 0;
-    -webkit-transform: skew(-15deg);
-    -ms-transform: skew(-15deg);
-    transform: skew(-15deg);
-}
-#loading p {
-    color: #FFFFFF;
-    text-align: center;
-    -webkit-transform-origin: 100% 0;
-    -ms-transform-origin: 100% 0;
-    transform-origin: 100% 0;
-    -webkit-transform: skew(15deg);
-    -ms-transform: skew(15deg);
-    transform: skew(15deg);
 }

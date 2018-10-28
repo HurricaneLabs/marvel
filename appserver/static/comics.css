@@ -17,7 +17,7 @@ label {
     border: 8px solid #eb2328;
     position: relative;
     z-index: 2;
-    width: 30%;
+    width: 25%;
 }
 .panel-body h2 {
     font-size: 1.4em;
@@ -36,31 +36,31 @@ label {
     -webkit-transform-origin: 100% 0;
     -ms-transform-origin: 100% 0;
     transform-origin: 100% 0;
-    -webkit-transform: skew(-15deg);
-    -ms-transform: skew(-15deg);
-    transform: skew(-15deg);
+    -webkit-transform: skew(-5deg);
+    -ms-transform: skew(-5deg);
+    transform: skew(-5deg);
 }
 .panel-body #description h2 {
     color: white;
-    margin-left: 93px;
-    margin-right: 20px;
+    margin-left: 29%;
+    margin-right: 10%;
     -webkit-transform-origin: 100% 0;
     -ms-transform-origin: 100% 0;
     transform-origin: 100% 0;
-    -webkit-transform: skew(15deg);
-    -ms-transform: skew(15deg);
-    transform: skew(15deg);
+    -webkit-transform: skew(5deg);
+    -ms-transform: skew(5deg);
+    transform: skew(5deg);
 }
 .panel-body #description p {
     color: white;
-    margin-left: 100px;
-    margin-right: 20px;
+    margin-left: 30%;
+    margin-right: 10%;
     -webkit-transform-origin: 100% 0;
     -ms-transform-origin: 100% 0;
     transform-origin: 100% 0;
-    -webkit-transform: skew(15deg);
-    -ms-transform: skew(15deg);
-    transform: skew(15deg);
+    -webkit-transform: skew(5deg);
+    -ms-transform: skew(5deg);
+    transform: skew(5deg);
 }
 #other_comics {
     display: none;
@@ -82,28 +82,4 @@ label {
 }
 #comic_detail {
     display: none;
-    float: left;
-}
-#loading {
-    background: #eb2328;
-    width: 140px;
-    margin: 0 auto;
-    padding: 9px 0 1px;
-    display: block;
-    -webkit-transform-origin: 100% 0;
-    -ms-transform-origin: 100% 0;
-    transform-origin: 100% 0;
-    -webkit-transform: skew(-15deg);
-    -ms-transform: skew(-15deg);
-    transform: skew(-15deg);
-}
-#loading p {
-    color: #FFFFFF;
-    text-align: center;
-    -webkit-transform-origin: 100% 0;
-    -ms-transform-origin: 100% 0;
-    transform-origin: 100% 0;
-    -webkit-transform: skew(15deg);
-    -ms-transform: skew(15deg);
-    transform: skew(15deg);
 }
