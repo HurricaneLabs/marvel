@@ -1,0 +1,83 @@
+<form stylesheet="characters.css" script="characters.js">
+  <label>Characters</label>
+  <search id="character_search">
+    <query>sourcetype="marvel_characters" name="$character_name_tok$" | eval thumbnail = thumbnail_path.".".thumbnail_extension | table thumbnail, description, name</query>
+    <earliest>0</earliest>
+    <latest></latest>
+    <finalized>
+      <condition match=" 'job.resultCount' != 0">
+        <set token="image_tok">$result.thumbnail$</set>
+        <set token="name_tok">$result.name$</set>
+        <set token="description_tok">$result.description$</set>
+        <unset token="loading_tok"></unset>
+      </condition>
+    </finalized>
+  </search>
+  <search id="other_characters">
+    <query>
+        sourcetype="marvel_characters" | eval thumbnail = thumbnail_path.".".thumbnail_extension  | table thumbnail, name | head [tstats count where sourcetype="marvel_characters" | eval random = (random() % count) + 1 | return $random] | tail 5
+      </query>
+    <earliest>0</earliest>
+    <latest></latest>
+  </search>
+  <fieldset submitButton="false">
+    <input type="dropdown" token="character_name_tok" id="select_characters" searchWhenChanged="true">
+      <label>Select a character</label>
+      <fieldForLabel>name</fieldForLabel>
+      <fieldForValue>name</fieldForValue>
+      <search>
+        <query>sourcetype="marvel_characters" | eval thumbnail = thumbnail_path.".".thumbnail_extension | stats count by name</query>
+        <earliest>0</earliest>
+        <latest></latest>
+      </search>
+      <change>
+        <condition>
+          <set token="loading_tok">true</set>
+          <unset token="image_tok"></unset>
+          <unset token="name_tok"></unset>
+          <unset token="description_tok"></unset>
+          <unset token="loading_tok"></unset>
+        </condition>
+      </change>
+    </input>
+  </fieldset>
+  <row>
+    <panel depends="$loading_tok$">
+      <html>
+        <div id="loading">
+          <p>Loading...</p>
+        </div>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$image_tok$,$description_tok$">
+      <html>
+        <div id="other_characters"/>
+        <div id="character_detail">
+          <div id="img_wrapper">
+            <img src="$image_tok$"/>
+          </div>
+          <div id="description">
+            <h2>$name_tok$</h2>
+            <p>$description_tok$</p>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+  <row depends="$no_show$">
+    <panel>
+      <html>
+         <style>
+           div[data-view="views/shared/appbar/Master"] {
+             background-color: #eb2328;
+             }
+            div[data-role="underline"] {
+             background-color: #000000;
+            }
+         </style>
+       </html>
+    </panel>
+  </row>
+</form>

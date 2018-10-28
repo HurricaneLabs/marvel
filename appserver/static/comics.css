@@ -24,7 +24,7 @@ label {
 }
 .panel-body #description {
     position: absolute;
-    width: 85%;
+    width: 60%;
     top: 30px;
     left: 11%;
     padding: 1%;
@@ -42,8 +42,8 @@ label {
 }
 .panel-body #description h2 {
     color: white;
-    margin-left: 28%;
-    margin-right: 15%;
+    margin-left: 93px;
+    margin-right: 20px;
     -webkit-transform-origin: 100% 0;
     -ms-transform-origin: 100% 0;
     transform-origin: 100% 0;
@@ -53,8 +53,8 @@ label {
 }
 .panel-body #description p {
     color: white;
-    margin-left: 29%;
-    margin-right: 15%;
+    margin-left: 100px;
+    margin-right: 20px;
     -webkit-transform-origin: 100% 0;
     -ms-transform-origin: 100% 0;
     transform-origin: 100% 0;
@@ -63,8 +63,11 @@ label {
     transform: skew(15deg);
 }
 #other_comics {
-    margin-top: 2em;
     display: none;
+    float: right;
+    width: 200px;
+    min-height: 200px;
+
 }
 #other_comics a {
     display: inline-block;
@@ -77,8 +80,9 @@ label {
     border: 0;
     border: 2px solid #eb2328;
 }
-#top_row {
+#comic_detail {
     display: none;
+    float: left;
 }
 #loading {
     background: #eb2328;

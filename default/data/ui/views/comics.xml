@@ -1,22 +1,26 @@
-<form stylesheet="dashboard.css">
+<form stylesheet="comics.css" script="comics.js">
   <label>Comics</label>
-    <search>
-    <query>sourcetype="marvel_comics" title="$comic_title_tok$" | eval thumbnail = thumbnail_path.".".thumbnail_extension | table thumbnail, description</query>
+  <search id="comic_search">
+    <query>sourcetype="marvel_comics" title="$comic_title_tok$" | eval thumbnail = thumbnail_path.".".thumbnail_extension | table thumbnail, description, title</query>
     <earliest>0</earliest>
     <latest></latest>
     <finalized>
       <condition match=" 'job.resultCount' != 0">
         <set token="image_tok">$result.thumbnail$</set>
+        <set token="title_tok">$result.title$</set>
         <set token="description_tok">$result.description$</set>
       </condition>
-      <change>
-        <unset token="image_tok"/>
-        <unset token="description_tok"/>
-      </change>
     </finalized>
   </search>
+  <search id="other_comics">
+    <query>
+        sourcetype="marvel_comics" | eval thumbnail = thumbnail_path.".".thumbnail_extension  | table thumbnail, title | head [tstats count where sourcetype="marvel_comics" | eval random = (random() % count) + 1 | return $random] | tail 5
+      </query>
+    <earliest>0</earliest>
+    <latest></latest>
+  </search>
   <fieldset submitButton="false">
-    <input type="dropdown" token="comic_title_tok" searchWhenChanged="true">
+    <input type="dropdown" token="comic_title_tok" id="select_comics" searchWhenChanged="true">
       <label>Select a comic</label>
       <fieldForLabel>title</fieldForLabel>
       <fieldForValue>title</fieldForValue>
@@ -25,25 +29,43 @@
         <earliest>0</earliest>
         <latest></latest>
       </search>
+      <change>
+        <condition>
+          <unset token="image_tok"></unset>
+          <unset token="title_tok"></unset>
+          <unset token="description_tok"></unset>
+        </condition>
+      </change>
     </input>
   </fieldset>
   <row>
     <panel depends="$image_tok$,$description_tok$">
       <html>
-          <div class="img_wrapper">
+        <div id="other_comics"/>
+        <div id="comic_detail">
+          <div id="img_wrapper">
             <img src="$image_tok$"/>
           </div>
-          <div class="description">
+          <div id="description">
+            <h2>$title_tok$</h2>
             <p>$description_tok$</p>
           </div>
-      </html>
-    </panel>
-    <panel rejects="$image_tok$,$description_tok$">
-      <html>
-        <div class="loading">
-          <p>Loading...</p>
         </div>
       </html>
+    </panel>
+  </row>
+  <row depends="$no_show$">
+    <panel>
+      <html>
+         <style>
+           div[data-view="views/shared/appbar/Master"] {
+             background-color: #eb2328;
+             }
+            div[data-role="underline"] {
+             background-color: #000000;
+            }
+         </style>
+       </html>
     </panel>
   </row>
 </form>
