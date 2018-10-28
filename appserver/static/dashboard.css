@@ -1,0 +1,105 @@
+body, .dashboard-body {
+    background-color: #202020;
+}
+h2, h3 {
+    color: #FFFFFF;
+}
+label {
+    color: #FFFFFF;
+}
+.dashboard-row .dashboard-panel .panel-body.html {
+    padding: 0;
+}
+.dashboard-row .dashboard-panel {
+    background: none;
+}
+.panel-body #img_wrapper {
+    border: 8px solid #eb2328;
+    position: relative;
+    z-index: 2;
+    width: 30%;
+}
+.panel-body h2 {
+    font-size: 1.4em;
+}
+.panel-body #description {
+    position: absolute;
+    width: 85%;
+    top: 30px;
+    left: 11%;
+    padding: 1%;
+    z-index: 1;
+    display: inline-block;
+    font-size: 1.4em;
+    line-height: 1.3em;
+    background: #eb2328;
+    -webkit-transform-origin: 100% 0;
+    -ms-transform-origin: 100% 0;
+    transform-origin: 100% 0;
+    -webkit-transform: skew(-15deg);
+    -ms-transform: skew(-15deg);
+    transform: skew(-15deg);
+}
+.panel-body #description h2 {
+    color: white;
+    margin-left: 28%;
+    margin-right: 15%;
+    -webkit-transform-origin: 100% 0;
+    -ms-transform-origin: 100% 0;
+    transform-origin: 100% 0;
+    -webkit-transform: skew(15deg);
+    -ms-transform: skew(15deg);
+    transform: skew(15deg);
+}
+.panel-body #description p {
+    color: white;
+    margin-left: 29%;
+    margin-right: 15%;
+    -webkit-transform-origin: 100% 0;
+    -ms-transform-origin: 100% 0;
+    transform-origin: 100% 0;
+    -webkit-transform: skew(15deg);
+    -ms-transform: skew(15deg);
+    transform: skew(15deg);
+}
+#other_comics {
+    margin-top: 2em;
+    display: none;
+}
+#other_comics a {
+    display: inline-block;
+    margin: 10px 10px 10px 0;
+}
+#other_comics a img.other_comic {
+    max-width: 125px;
+    height: auto;
+    vertical-align: middle;
+    border: 0;
+    border: 2px solid #eb2328;
+}
+#top_row {
+    display: none;
+}
+#loading {
+    background: #eb2328;
+    width: 140px;
+    margin: 0 auto;
+    padding: 9px 0 1px;
+    display: block;
+    -webkit-transform-origin: 100% 0;
+    -ms-transform-origin: 100% 0;
+    transform-origin: 100% 0;
+    -webkit-transform: skew(-15deg);
+    -ms-transform: skew(-15deg);
+    transform: skew(-15deg);
+}
+#loading p {
+    color: #FFFFFF;
+    text-align: center;
+    -webkit-transform-origin: 100% 0;
+    -ms-transform-origin: 100% 0;
+    transform-origin: 100% 0;
+    -webkit-transform: skew(15deg);
+    -ms-transform: skew(15deg);
+    transform: skew(15deg);
+}

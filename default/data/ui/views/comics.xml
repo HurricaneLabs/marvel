@@ -1,0 +1,49 @@
+<form stylesheet="dashboard.css">
+  <label>Comics</label>
+    <search>
+    <query>sourcetype="marvel_comics" title="$comic_title_tok$" | eval thumbnail = thumbnail_path.".".thumbnail_extension | table thumbnail, description</query>
+    <earliest>0</earliest>
+    <latest></latest>
+    <finalized>
+      <condition match=" 'job.resultCount' != 0">
+        <set token="image_tok">$result.thumbnail$</set>
+        <set token="description_tok">$result.description$</set>
+      </condition>
+      <change>
+        <unset token="image_tok"/>
+        <unset token="description_tok"/>
+      </change>
+    </finalized>
+  </search>
+  <fieldset submitButton="false">
+    <input type="dropdown" token="comic_title_tok" searchWhenChanged="true">
+      <label>Select a comic</label>
+      <fieldForLabel>title</fieldForLabel>
+      <fieldForValue>title</fieldForValue>
+      <search>
+        <query>sourcetype="marvel_comics" | eval thumbnail = thumbnail_path.".".thumbnail_extension | stats count by title</query>
+        <earliest>0</earliest>
+        <latest></latest>
+      </search>
+    </input>
+  </fieldset>
+  <row>
+    <panel depends="$image_tok$,$description_tok$">
+      <html>
+          <div class="img_wrapper">
+            <img src="$image_tok$"/>
+          </div>
+          <div class="description">
+            <p>$description_tok$</p>
+          </div>
+      </html>
+    </panel>
+    <panel rejects="$image_tok$,$description_tok$">
+      <html>
+        <div class="loading">
+          <p>Loading...</p>
+        </div>
+      </html>
+    </panel>
+  </row>
+</form>
