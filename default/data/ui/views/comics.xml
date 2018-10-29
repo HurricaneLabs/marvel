@@ -1,4 +1,4 @@
-<form stylesheet="comics.css" script="comics.js">
+<form stylesheet="comics.css" script="comics.js" hideEdit="false">
   <label>Comics</label>
   <search id="comic_search">
     <query>sourcetype="marvel_comics" title="$comic_title_tok$" | eval thumbnail = thumbnail_path.".".thumbnail_extension | table thumbnail, description, title</query>
@@ -25,7 +25,7 @@
       <fieldForLabel>title</fieldForLabel>
       <fieldForValue>title</fieldForValue>
       <search>
-        <query>sourcetype="marvel_comics" | eval thumbnail = thumbnail_path.".".thumbnail_extension | stats count by title</query>
+        <query>sourcetype="marvel_comics" | stats count by title</query>
         <earliest>0</earliest>
         <latest></latest>
       </search>

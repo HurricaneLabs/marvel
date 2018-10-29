@@ -1,7 +1,9 @@
-<form stylesheet="characters.css" script="characters.js">
+<form stylesheet="characters.css" script="characters.js" hideEdit="false">
   <label>Characters</label>
   <search id="character_search">
-    <query>sourcetype="marvel_characters" name="$character_name_tok$" | eval thumbnail = thumbnail_path.".".thumbnail_extension | table thumbnail, description, name</query>
+    <query>
+      sourcetype="marvel_characters" name="$character_name_tok$" | eval thumbnail = thumbnail_path.".".thumbnail_extension | table thumbnail, description, name
+    </query>
     <earliest>0</earliest>
     <latest></latest>
     <finalized>
@@ -9,7 +11,6 @@
         <set token="image_tok">$result.thumbnail$</set>
         <set token="name_tok">$result.name$</set>
         <set token="description_tok">$result.description$</set>
-        <unset token="loading_tok"></unset>
       </condition>
     </finalized>
   </search>
@@ -26,30 +27,19 @@
       <fieldForLabel>name</fieldForLabel>
       <fieldForValue>name</fieldForValue>
       <search>
-        <query>sourcetype="marvel_characters" | eval thumbnail = thumbnail_path.".".thumbnail_extension | stats count by name</query>
+        <query>sourcetype="marvel_characters" | stats count by name</query>
         <earliest>0</earliest>
         <latest></latest>
       </search>
       <change>
         <condition>
-          <set token="loading_tok">true</set>
           <unset token="image_tok"></unset>
           <unset token="name_tok"></unset>
           <unset token="description_tok"></unset>
-          <unset token="loading_tok"></unset>
         </condition>
       </change>
     </input>
   </fieldset>
-  <row>
-    <panel depends="$loading_tok$">
-      <html>
-        <div id="loading">
-          <p>Loading...</p>
-        </div>
-      </html>
-    </panel>
-  </row>
   <row>
     <panel depends="$image_tok$,$description_tok$">
       <html>
