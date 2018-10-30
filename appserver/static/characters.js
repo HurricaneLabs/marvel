@@ -5,19 +5,20 @@ require([
     "jquery",
 ], function( _, Backbone, mvc, $) {
 
-    const tokens = mvc.Components.get("default");
     const submitted_tokens = mvc.Components.get("submitted");
     const character_search = mvc.Components.getInstance('character_search');
-    const other_characters = mvc.Components.getInstance('other_characters');
+    const other_characters_search = mvc.Components.getInstance('other_characters_search');
     const select_characters = mvc.Components.getInstance('select_characters');
-    const character_search_results = character_search.data("results", { count : 0 });
-    const other_characters_results = other_characters.data("results", { count : 0 });
 
     $('#character_detail').hide();
+
+    const character_search_results = character_search.data("results", { count : 0 });
 
     character_search_results.on("data", () => {
         $('#character_detail').hide().fadeIn(1000);
     });
+
+    const other_characters_results = other_characters_search.data("results", { count : 0 });
 
     other_characters_results.on("data", () => {
         let rows = other_characters_results.data().rows;
@@ -37,17 +38,15 @@ require([
         $('#other_characters').fadeOut(1000, () => {
             let img_title = $(this).parent().data('img');
             submitted_tokens.set('character_name_tok', img_title);
-            tokens.set('form.character_name_tok', img_title);
             character_search.startSearch();
-            other_characters.startSearch();
+            other_characters_search.startSearch();
         });
-
     });
 
     select_characters.on("change", () => {
         $('#character_detail').fadeOut(1000);
-        $('#other_characters').hide();
-        other_characters.startSearch();
+        $('#other_characters').fadeOut();
+        other_characters_search.startSearch();
     });
 
 });

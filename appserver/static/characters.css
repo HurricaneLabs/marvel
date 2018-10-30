@@ -1,10 +1,7 @@
 body, .dashboard-body {
     background-color: #202020;
 }
-h2, h3 {
-    color: #FFFFFF;
-}
-label {
+h2, h3, label {
     color: #FFFFFF;
 }
 .dashboard-row .dashboard-panel .panel-body.html {
@@ -41,9 +38,6 @@ label {
     font-size: 1.4em;
     line-height: 1.3em;
     background: #eb2328;
-    -webkit-transform-origin: 100% 0;
-    -ms-transform-origin: 100% 0;
-    transform-origin: 100% 0;
     -webkit-transform: skew(-5deg);
     -ms-transform: skew(-5deg);
     transform: skew(-5deg);
@@ -52,9 +46,6 @@ label {
     color: white;
     margin-left: 29%;
     margin-right: 10%;
-    -webkit-transform-origin: 100% 0;
-    -ms-transform-origin: 100% 0;
-    transform-origin: 100% 0;
     -webkit-transform: skew(5deg);
     -ms-transform: skew(5deg);
     transform: skew(5deg);
@@ -63,9 +54,6 @@ label {
     color: white;
     margin-left: 30%;
     margin-right: 10%;
-    -webkit-transform-origin: 100% 0;
-    -ms-transform-origin: 100% 0;
-    transform-origin: 100% 0;
     -webkit-transform: skew(5deg);
     -ms-transform: skew(5deg);
     transform: skew(5deg);
@@ -75,19 +63,11 @@ label {
     float: right;
     width: 200px;
     min-height: 200px;
-
 }
 #other_characters a {
     display: inline-block;
-    margin: 10px 10px 10px 0;
+    margin: 10px 5px 0 0;
 }
 #other_characters a img.other_character {
-    max-width: 125px;
-    height: auto;
-    vertical-align: middle;
-    border: 0;
     border: 2px solid #eb2328;
-}
-#character_detail {
-    display: none;
 }

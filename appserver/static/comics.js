@@ -5,19 +5,20 @@ require([
     "jquery",
 ], function( _, Backbone, mvc, $) {
 
-    const tokens = mvc.Components.get("default");
     const submitted_tokens = mvc.Components.get("submitted");
     const comic_search = mvc.Components.getInstance('comic_search');
-    const other_comics = mvc.Components.getInstance('other_comics');
+    const other_comics_search = mvc.Components.getInstance('other_comics_search');
     const select_comics = mvc.Components.getInstance('select_comics');
-    const comic_search_results = comic_search.data("results", { count : 0 });
-    const other_comics_results = other_comics.data("results", { count : 0 });
 
     $('#comic_detail').hide();
+
+    const comic_search_results = comic_search.data("results", { count : 0 });
 
     comic_search_results.on("data", () => {
         $('#comic_detail').hide().fadeIn(1000);
     });
+
+    const other_comics_results = other_comics_search.data("results", { count : 0 });
 
     other_comics_results.on("data", () => {
         let rows = other_comics_results.data().rows;
@@ -37,7 +38,6 @@ require([
         $('#other_comics').fadeOut(1000, () => {
             let img_title = $(this).parent().data('img');
             submitted_tokens.set('comic_title_tok', img_title);
-            tokens.set('form.comic_title_tok', img_title);
             comic_search.startSearch();
             other_comics.startSearch();
         });
@@ -46,8 +46,8 @@ require([
 
     select_comics.on("change", () => {
         $('#comic_detail').fadeOut(1000);
-        $('#other_comics').hide();
-        other_comics.startSearch();
+        $('#other_comics').fadeOut();
+        other_comics_search.startSearch();
     });
 
 });
