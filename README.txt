@@ -22,6 +22,7 @@ Copyright 2018 Hurricane Labs
 # Installation
 - Once you place this app inside of Splunk's etc/app folder run `npm install` inside the bin/app folder to pull down
 all the dependencies.
+- Then restart Splunk
 
 
 # Steps to use: #
