@@ -37,9 +37,9 @@ require([
         $('#comic_detail').fadeOut(1000);
         $('#other_comics').fadeOut(1000, () => {
             let img_title = $(this).parent().data('img');
-            submitted_tokens.set('comic_title_tok', img_title);
+            submitted_tokens.set(   'comic_title_tok', img_title);
             comic_search.startSearch();
-            other_comics.startSearch();
+            other_comics_search.startSearch();
         });
 
     });

@@ -19,6 +19,11 @@ Copyright 2018 Hurricane Labs
 - It pulls Marvel Comic character and comic book data from the Marvel API.
 
 
+# Installation
+- Once you place this app inside of Splunk's etc/app folder run `npm install` inside the bin/app folder to pull down
+all the dependencies.
+
+
 # Steps to use: #
 - First, before using this app you will need to sign-up to a Marvel developer account here: https://developer.marvel.com/
 - Once you've obtained your private and public keys, you will enter them into this app's setup page.
