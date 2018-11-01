@@ -9,7 +9,6 @@ define([
             public_key: "",
             private_key: "",
             success: false,
-            failure: false,
             is_configured: false,
             reset: false
         }

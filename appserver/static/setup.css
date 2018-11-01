@@ -33,14 +33,6 @@ input[type="text"], input[type="password"], input[type="email"] {
 .success p {
     color: #fff;
 }
-.failure {
-    margin-left: -20px;
-    width: 530px;
-    padding: 13px 10px 5px 20px;
-    margin-bottom: 20px;
-    background: #bd3232;
-    color: #fff;
-}
 .notice {
     margin-left: -20px;
     width: 530px;

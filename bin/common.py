@@ -3,8 +3,6 @@
 Common functions
 
 """
-import re
-import sys
 import splunk.entity as entity
 
 

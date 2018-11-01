@@ -11,7 +11,7 @@ require([
     "splunkjs/mvc",
     "jquery",
     "splunkjs/mvc/simplesplunkview",
-    '../app/marvel/components/views/settingsView',
+    '../app/marvel/components/views/SettingsView',
     "text!MarvelTemplate",
 ], function( _, Backbone, mvc, $, SimpleSplunkView, SettingsView, MarvelTemplate){
 
@@ -26,11 +26,6 @@ require([
         },
 
         _loadSettings: function() {
-
-            const configComponents = $('#MarvelConfig-template', this.$el).text();
-            console.log('configComponents: ', configComponents);
-            $("#content", this.$el).html(_.template(configComponents));
-
             new SettingsView({
                 id: "settingsView",
                 el: $('#MarvelComponentsWrapper')
