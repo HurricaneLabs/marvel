@@ -1,4 +1,4 @@
-<form stylesheet="comics.css" script="comics.js" hideEdit="false">
+<form stylesheet="comics.css" script="comics.js" hideEdit="true">
   <label>Comics</label>
   <search id="comic_search">
     <query>sourcetype="marvel_comics" title="$comic_title_tok$" | eval thumbnail = thumbnail_path.".".thumbnail_extension | table thumbnail, description, title</query>
