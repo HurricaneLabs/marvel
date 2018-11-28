@@ -1,9 +1,9 @@
 require.config({
     paths: {
         text: "../app/marvel/components/lib/text",
-        'settingsTemplate': '../app/marvel/components/templates/settings.html',
-        'settingsModel': '../app/marvel/components/models/settingsModel',
-        "setupView": '../app/marvel/components/views/SetupView',
+        'SettingsTemplate': '../app/marvel/components/templates/settings.html',
+        'SettingsModel': '../app/marvel/components/models/SettingsModel',
+        "SetupView": '../app/marvel/components/views/SetupView',
     }
 });
 
@@ -12,10 +12,10 @@ define([
     "backbone",
     "splunkjs/mvc",
     "jquery",
-    "setupView",
+    "SetupView",
     "splunkjs/mvc/simplesplunkview",
-    "text!settingsTemplate",
-    "settingsModel",
+    "text!SettingsTemplate",
+    "SettingsModel",
     "models/SplunkDBase",
     "util/splunkd_utils"
 ], function (
@@ -96,7 +96,7 @@ define([
                     this.deleteEncryptedCredential('private_key', true).done(() => {
                         this.saveEncryptedCredential('public_key', fields['public_key'][0], "");
                         this.saveEncryptedCredential('private_key', fields['private_key'][0], "");
-                        this._showSuccessMesage();
+                        this.showSuccessMesage();
                     });
                 });
             };
@@ -109,7 +109,7 @@ define([
 
                 $(document).find("#submitData").prop("disabled", true).text("Submitting...");
 
-                handleSubmittedData(this.is_app_configured);
+                handleSubmittedData();
 
             }
 
@@ -124,7 +124,7 @@ define([
             });
         },
 
-        _showSuccessMesage: function () {
+        showSuccessMesage: function () {
 
             $(document).find(".success")
                 .fadeIn(1000).delay(3000)
@@ -134,18 +134,15 @@ define([
                     }
                 });
 
-            setTimeout(function () {
-
-                $(document).find("#submitData").prop("disabled", false).text("Submit");
+            setTimeout(() => {
 
                 this.model.set({
                     "success": true,
-                    "failure": false,
                     "public_key": "<encrypted>",
                     "private_key": "<encrypted>"
                 });
 
-            }.bind(this), 4000);
+            }, 4000);
 
         },
 
@@ -162,7 +159,7 @@ define([
         },
 
         //Do a general to check to see if we have credentials stored in the marvel App
-        _getCredentials: function () {
+        getCredentials: function () {
             const service = mvc.createService();
             const promise = new $.Deferred();
 
@@ -202,7 +199,7 @@ define([
         /**
          * Get the app configuration. Override -- Added Promise
          */
-        _getAppConfig: function () {
+        getAppConfig: function () {
 
             const promise = new $.Deferred();
             // Use the current app if the app name is not defined
@@ -233,9 +230,9 @@ define([
                 this.initial_load = false;
             }
 
-            this._getAppConfig().done(() => {
+            this.getAppConfig().done(() => {
                 if (this.is_app_configured) {
-                    this._getCredentials().done(() => {
+                    this.getCredentials().done(() => {
                         this.$el.html(_.template(SettingsTemplate, this.model.toJSON()));
                     });
                 } else {

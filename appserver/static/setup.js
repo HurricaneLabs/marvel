@@ -25,7 +25,7 @@ require([
             this.render();
         },
 
-        _loadSettings: function() {
+        loadSettings: function() {
             new SettingsView({
                 id: "settingsView",
                 el: $('#MarvelComponentsWrapper')
@@ -37,7 +37,7 @@ require([
             document.title = "Marvel Setup";
             $(this.$el).html(_.template(MarvelTemplate));
 
-            this._loadSettings();
+            this.loadSettings();
 
             return this;
         }

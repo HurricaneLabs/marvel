@@ -76,7 +76,6 @@
 
             let alreadyIndexed = 0;
             let errorFound = false;
-            let working = true;
 
             marvel.characters
                 .name(character).get(function (err, res) {
@@ -129,7 +128,6 @@
                         }
                         catch (e) {
                             errorFound = true;
-                            working = false; // Stop streaming if we get an error.
                             Logger.error(name, "An error occured: " + e.message);
                             done(e);
 
