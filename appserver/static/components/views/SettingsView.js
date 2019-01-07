@@ -96,7 +96,7 @@ define([
                     this.deleteEncryptedCredential('private_key', true).done(() => {
                         this.saveEncryptedCredential('public_key', fields['public_key'][0], "");
                         this.saveEncryptedCredential('private_key', fields['private_key'][0], "");
-                        this.showSuccessMesage();
+                        this.setConfigured().done(() => { this.showSuccessMessage(); });
                     });
                 });
             };
@@ -107,6 +107,8 @@ define([
             // If there are no form errors
             if (!field_errors) {
 
+                $(document).find("#public_key").prop("disabled", true);
+                $(document).find("#private_key").prop("disabled", true);
                 $(document).find("#submitData").prop("disabled", true).text("Submitting...");
 
                 handleSubmittedData();
@@ -124,26 +126,19 @@ define([
             });
         },
 
-        showSuccessMesage: function () {
+        showSuccessMessage: function () {
 
             $(document).find(".success")
-                .fadeIn(1000).delay(3000)
+                .delay(1000)
+                .fadeIn(1000)
+                .delay(3000)
                 .fadeOut(1000, () => {
-                    if (!this.is_app_configured) {
-                        this.setConfigured();
-                    }
+                    this.model.set({
+                        "success": true,
+                        "public_key": "<encrypted>",
+                        "private_key": "<encrypted>"
+                    });
                 });
-
-            setTimeout(() => {
-
-                this.model.set({
-                    "success": true,
-                    "public_key": "<encrypted>",
-                    "private_key": "<encrypted>"
-                });
-
-            }, 4000);
-
         },
 
         setPublicKey: function () {

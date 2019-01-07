@@ -613,10 +613,13 @@ define([
          */
         setConfigured: function(){
 
+            var promise = jQuery.Deferred();
+
             // Not necessary to set the app as configured since it is already configured
             if(this.is_app_configured){
                 console.info("App is already set as configured; no need to update it");
-                return;
+                promise.resolve();
+                return promise;
             }
 
             // Modify the model
@@ -635,12 +638,17 @@ define([
                 // If successful, show a success message
                 saveResponse.done(function(model, response, options){
                     console.info("App configuration was successfully updated");
+                    promise.resolve();
                 }.bind(this))
 
                 // Otherwise, show a failure message
                 .fail(function(response){
                     console.warn("App configuration was not successfully updated");
+                    promise.reject();
                 }.bind(this));
+
+                return promise;
+
             }
 
         },

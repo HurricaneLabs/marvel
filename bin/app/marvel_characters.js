@@ -58,6 +58,8 @@
                         }
                     }
                 );
+        }).catch(function(err) {
+            done(new Error(err));
         });
 
     };
@@ -150,6 +152,8 @@
 
             });
 
+        }).catch(function(err) {
+            done(new Error(err));
         });
 
     };
