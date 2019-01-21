@@ -180,27 +180,30 @@ define([
         },
 
         /**
-         * Get the app configuration.
+         * Get the app configuration. -- (Overriden -- added a Promise.)
          */
-        getAppConfig: function(){
+        getAppConfig: function () {
 
+            const promise = new $.Deferred();
             // Use the current app if the app name is not defined
-            if(this.app_name === null || this.app_name === undefined){
+            if (this.app_name === null || this.app_name === undefined) {
                 this.app_name = mvc_utils.getCurrentApp();
             }
 
-	        this.app_config = new AppConfig();
+            this.app_config = new AppConfig();
 
             this.app_config.fetch({
                 url: splunkd_utils.fullpath('/servicesNS/nobody/system/apps/local/' + this.app_name),
-                success: function (model, response, options) {
-                    console.info("Successfully retrieved the app configuration");
+                success: (model, response, options) => {
                     this.is_app_configured = model.entry.associated.content.attributes.configured;
-                }.bind(this),
-                error: function () {
-                    console.warn("Unable to retrieve the app configuration");
-                }.bind(this)
+                    promise.resolve()
+                },
+                error: () => {
+                    promise.reject();
+                }
             });
+
+            return promise;
         },
 
         /**

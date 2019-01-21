@@ -27,15 +27,7 @@ define([
     SimpleSplunkView,
     SettingsTemplate,
     SettingsModel,
-    SplunkDBaseModel,
-    splunkd_utils
 ) {
-
-    const Config = SplunkDBaseModel.extend({
-        initialize: function () {
-            SplunkDBaseModel.prototype.initialize.apply(this, arguments);
-        }
-    });
 
     return SetupView.extend({
 
@@ -60,84 +52,86 @@ define([
             this.listenTo(this.model, 'change', this.render);
         },
 
+        handleSubmittedData: function() {
+            this.deleteEncryptedCredential('public_key', true).done(() => {
+                this.deleteEncryptedCredential('private_key', true).done(() => {
+                    this.saveEncryptedCredential('public_key', this.model.get("public_key"), "");
+                    this.saveEncryptedCredential('private_key', this.model.get("private_key"), "");
+                    this.setConfigured().done(() => { this.showSuccessMessage(); });
+                });
+            });
+        },
+
+        validateFields: function(fields) {
+            fields.forEach((field) => {
+                let field_name = Object.keys(field);
+                let field_value = this.model.get(Object.keys(field));
+                let field_error = Object.values(field)[0];
+                let attribute = {};
+                field_value === "" ?
+                    (
+                        attribute[field_name+"_error"] = field_error,
+                        this.model.set({ "field_errors" : true })
+                    ) :
+                    (
+                        attribute[field_name+"_error"] = "",
+                        this.model.set({ "field_errors" : false })
+                    );
+                // attribute expands to this.model.set(<public|private>_key_error : <field_error>)
+                // We do this since we are attempting to dynamically set the model's object value
+                this.model.set(attribute);
+            });
+        },
+
         submitData: function (e) {
 
             e.preventDefault();
 
-            this.model.set({
-                "reset": false
-            }, {"silent": true});
-
-            let field_errors = false;
-            $(".input-error").remove();
-            $("input").removeClass("red-border");
-
-            let fields = {
-                'public_key': [this.model.get("public_key"), 'You must provide an public key.'],
-                'private_key': [this.model.get("private_key"), 'You must provide a private key.'],
-            };
-
-            const validateFields = () => {
-                for (let key in fields) {
-                    if (fields.hasOwnProperty(key)) {
-                        let value = fields[key][0];
-                        let error_message = fields[key][1];
-                        if (value === '') {
-                            $("#" + key + "").addClass("red-border");
-                            $("<span class=\"input-error\">" + error_message + "</span>").insertAfter("#" + key + "");
-                            field_errors = true;
-                        }
-                    }
-                }
-            };
-
-            const handleSubmittedData = () => {
-                this.deleteEncryptedCredential('public_key', true).done(() => {
-                    this.deleteEncryptedCredential('private_key', true).done(() => {
-                        this.saveEncryptedCredential('public_key', fields['public_key'][0], "");
-                        this.saveEncryptedCredential('private_key', fields['private_key'][0], "");
-                        this.setConfigured().done(() => { this.showSuccessMessage(); });
-                    });
-                });
-            };
+            let fields = [
+                { 'public_key' : 'You must provide an public key.' },
+                { 'private_key' : 'You must provide a private key.' },
+            ];
 
             // Run some basic validation
-            validateFields();
+            this.validateFields(fields);
 
             // If there are no form errors
-            if (!field_errors) {
-
-                $(document).find("#public_key").prop("disabled", true);
-                $(document).find("#private_key").prop("disabled", true);
-                $(document).find("#submitData").prop("disabled", true).text("Submitting...");
-
-                handleSubmittedData();
-
+            if (!this.model.get("field_errors")) {
+                this.model.set({ "updating" : true });
+                this.handleSubmittedData();
             }
+        },
 
+        setConfiguredModel: function() {
+            this.model.set({
+                "public_key": "<encrypted>",
+                "private_key": "<encrypted>",
+                "is_configured": true,
+            });
+        },
+
+        setUnconfiguredModel: function() {
+            this.model.set({
+                "private_key" : "",
+                "public_key" : "",
+                "is_configured" : false,
+            });
         },
 
         resetData: function (e) {
             e.preventDefault();
-            $(e.currentTarget).prop("disabled", true).text("Resetting...");
-
-            this.model.set({
-                "reset": true
-            });
+            this.model.set({ 'reset' : true }); // Set to true so render doesn't called setConfiguredModel();
+            this.setUnconfiguredModel();
         },
 
         showSuccessMessage: function () {
-
             $(document).find(".success")
                 .delay(1000)
                 .fadeIn(1000)
-                .delay(3000)
+                .delay(2000)
                 .fadeOut(1000, () => {
-                    this.model.set({
-                        "success": true,
-                        "public_key": "<encrypted>",
-                        "private_key": "<encrypted>"
-                    });
+                    this.setConfiguredModel();
+                    this.model.set({ "updating" : false, "reset" : false }); // Done updating and no longer in reset mode
                 });
         },
 
@@ -153,83 +147,19 @@ define([
 
         },
 
-        //Do a general to check to see if we have credentials stored in the marvel App
-        getCredentials: function () {
-            const service = mvc.createService();
-            const promise = new $.Deferred();
-
-            service.get('/services/marvel/marvel_config/config', '',
-                (err, response) => {
-                    if (err) {
-                        console.error(err);
-                        promise.reject();
-                    } else {
-                        const content = response.data.entry[0].content;
-                        const public_key = content.public_key;
-                        const private_key = content.private_key;
-                        // Was triggered by a reset action?
-                        if (this.model.get("reset")) {
-                            this.model.set({
-                                "public_key": "",
-                                "private_key": "",
-                                "is_configured": false
-                            }, {silent: true});
-                        } else {
-                            this.model.set({
-                                "public_key": public_key,
-                                "private_key": private_key,
-                                "is_configured": true
-                            }, {silent: true});
-                        }
-
-                        promise.resolve();
-                    }
-                }
-            );
-
-            return promise;
-
-        },
-
-        /**
-         * Get the app configuration. Override -- Added Promise
-         */
-        getAppConfig: function () {
-
-            const promise = new $.Deferred();
-            // Use the current app if the app name is not defined
-            if (this.app_name === null || this.app_name === undefined) {
-                this.app_name = mvc_utils.getCurrentApp();
-            }
-
-            this.app_config = new Config();
-
-            this.app_config.fetch({
-                url: splunkd_utils.fullpath('/servicesNS/nobody/system/apps/local/' + this.app_name),
-                success: (model, response, options) => {
-                    this.is_app_configured = model.entry.associated.content.attributes.configured;
-                    promise.resolve()
-                },
-                error: () => {
-                    promise.reject();
-                }
-            });
-
-            return promise;
-        },
-
         render: function () {
 
-            if (this.initial_load) {
-                this.$el.html("<p>Loading Setup Page...</p>");
-                this.initial_load = false;
+            if (this.model.get("initial_load")) {
+                this.$el.html(`<p>Loading page setup...</p>`);
+                this.model.set({ "initial_load" : false }, { silent : true }); // Silent means do not re-render
             }
 
+            //Check if the app is configured
             this.getAppConfig().done(() => {
-                if (this.is_app_configured) {
-                    this.getCredentials().done(() => {
-                        this.$el.html(_.template(SettingsTemplate, this.model.toJSON()));
-                    });
+                if (this.is_app_configured && !this.model.get("reset")) {
+                    //The app is configured so get the credentials
+                    this.setConfiguredModel();
+                    this.$el.html(_.template(SettingsTemplate, this.model.toJSON()));
                 } else {
                     this.$el.html(_.template(SettingsTemplate, this.model.toJSON()));
                 }
