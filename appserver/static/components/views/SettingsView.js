@@ -106,6 +106,7 @@ define([
             this.model.set({
                 "public_key": "<encrypted>",
                 "private_key": "<encrypted>",
+                "reset" : false,
                 "is_configured": true,
             });
         },
@@ -114,13 +115,13 @@ define([
             this.model.set({
                 "private_key" : "",
                 "public_key" : "",
+                "reset" : true,
                 "is_configured" : false,
             });
         },
 
         resetData: function (e) {
             e.preventDefault();
-            this.model.set({ 'reset' : true }); // Set to true so render doesn't called setConfiguredModel();
             this.setUnconfiguredModel();
         },
 
@@ -131,7 +132,7 @@ define([
                 .delay(2000)
                 .fadeOut(1000, () => {
                     this.setConfiguredModel();
-                    this.model.set({ "updating" : false, "reset" : false }); // Done updating and no longer in reset mode
+                    this.model.set({ "updating" : false }); // Done updating and no longer in reset mode
                 });
         },
 
