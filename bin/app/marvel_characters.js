@@ -1,19 +1,19 @@
 (function () {
-    const fs = require("fs");
-    const path = require("path");
-    const splunkjs = require("splunk-sdk");
-    const Marvel = require('marvel');
-    const MarvelPasswords = require('./MarvelPasswords');
-    const ModularInputs = splunkjs.ModularInputs;
-    const Logger = ModularInputs.Logger;
-    const Event = ModularInputs.Event;
-    const Scheme = ModularInputs.Scheme;
-    const Argument = ModularInputs.Argument;
-    const utils = ModularInputs.utils;
-    const getPasswords = MarvelPasswords.GetPasswords;
+    var fs = require("fs");
+    var path = require("path");
+    var splunkjs = require("splunk-sdk");
+    var Marvel = require('marvel');
+    var MarvelPasswords = require('./MarvelPasswords');
+    var ModularInputs = splunkjs.ModularInputs;
+    var Logger = ModularInputs.Logger;
+    var Event = ModularInputs.Event;
+    var Scheme = ModularInputs.Scheme;
+    var Argument = ModularInputs.Argument;
+    var utils = ModularInputs.utils;
+    var getPasswords = MarvelPasswords.GetPasswords;
 
     exports.getScheme = function () {
-        const scheme = new Scheme("Marvel Characters");
+        var scheme = new Scheme("Marvel Characters");
 
         scheme.description = "Retrieve characters from the Marvel Universe.";
         scheme.useExternalValidation = true;
@@ -32,12 +32,12 @@
     };
 
     exports.validateInput = function (definition, done) {
-        const character = definition.parameters.character;
-        const service = new splunkjs.Service({sessionKey: definition.metadata["session_key"]});
+        var character = definition.parameters.character;
+        var service = new splunkjs.Service({sessionKey: definition.metadata["session_key"]});
 
         getPasswords(service).then(function(passwords) {
 
-            const marvel = new Marvel({
+            var marvel = new Marvel({
                 publicKey: passwords["public_key"],
                 privateKey: passwords["private_key"]
             });
@@ -65,19 +65,19 @@
     };
 
     exports.streamEvents = function (name, singleInput, eventWriter, done) {
-        const checkpointDir = this._inputDefinition.metadata["checkpoint_dir"];
-        const service = new splunkjs.Service({sessionKey: this._inputDefinition.metadata["session_key"]});
-        const character = singleInput.character;
+        var checkpointDir = this._inputDefinition.metadata["checkpoint_dir"];
+        var service = new splunkjs.Service({sessionKey: this._inputDefinition.metadata["session_key"]});
+        var character = singleInput.character;
 
         getPasswords(service).then(function(passwords) {
 
-            const marvel = new Marvel({
+            var marvel = new Marvel({
                 publicKey: passwords["public_key"],
                 privateKey: passwords["private_key"]
             });
 
-            let alreadyIndexed = 0;
-            let errorFound = false;
+            var alreadyIndexed = 0;
+            var errorFound = false;
 
             marvel.characters
                 .name(character).get(function (err, res) {
@@ -86,9 +86,9 @@
                     return;
                 }
 
-                const checkpointFile = path.join(checkpointDir, character + ".txt");
-                let checkpointFileNewContents = "";
-                let checkpointFileContents = "";
+                var checkpointFile = path.join(checkpointDir, character + ".txt");
+                var checkpointFileNewContents = "";
+                var checkpointFileContents = "";
 
                 Logger.info(name, "Retrieving Marvel character information: " + res);
 
@@ -101,9 +101,9 @@
                     fs.appendFileSync(checkpointFile, "");
                 }
 
-                for (let i = 0; i < res.length && !errorFound; i++) {
+                for (var i = 0; i < res.length && !errorFound; i++) {
 
-                    const json = {
+                    var json = {
                         id: res[i].id,
                         name: res[i].name,
                         modified: res[i].modified,

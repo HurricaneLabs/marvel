@@ -15,7 +15,7 @@ require([
     "text!MarvelTemplate",
 ], function( _, Backbone, mvc, $, SimpleSplunkView, SettingsView, MarvelTemplate){
 
-    const MarvelView = SimpleSplunkView.extend({
+    var MarvelView = SimpleSplunkView.extend({
 
         className: "MarvelSetupView",
 

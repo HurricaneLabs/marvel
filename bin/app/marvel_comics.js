@@ -1,19 +1,19 @@
 (function () {
-    const fs = require("fs");
-    const path = require("path");
-    const splunkjs = require("splunk-sdk");
-    const Marvel = require('marvel');
-    const MarvelPasswords = require('./MarvelPasswords');
-    const ModularInputs = splunkjs.ModularInputs;
-    const Logger = ModularInputs.Logger;
-    const Event = ModularInputs.Event;
-    const Scheme = ModularInputs.Scheme;
-    const Argument = ModularInputs.Argument;
-    const utils = ModularInputs.utils;
-    const getPasswords = MarvelPasswords.GetPasswords;
+    var fs = require("fs");
+    var path = require("path");
+    var splunkjs = require("splunk-sdk");
+    var Marvel = require('marvel');
+    var MarvelPasswords = require('./MarvelPasswords');
+    var ModularInputs = splunkjs.ModularInputs;
+    var Logger = ModularInputs.Logger;
+    var Event = ModularInputs.Event;
+    var Scheme = ModularInputs.Scheme;
+    var Argument = ModularInputs.Argument;
+    var utils = ModularInputs.utils;
+    var getPasswords = MarvelPasswords.GetPasswords;
 
     exports.getScheme = function () {
-        const scheme = new Scheme("Marvel Comics");
+        var scheme = new Scheme("Marvel Comics");
 
         scheme.description = "Retrieve Marvel comic books.";
         scheme.useExternalValidation = true;
@@ -33,7 +33,7 @@
                 description: "Limit the results returned (Minimum: 1, Maximum: 100)",
                 requiredOnCreate: true,
                 requiredOnEdit: false
-            }),
+            })
         ];
 
         Logger.info('Comic Scheme: ', scheme);
@@ -42,9 +42,9 @@
     };
 
     exports.validateInput = function (definition, done) {
-        const comic = definition.parameters.comic;
-        const result_limit = definition.parameters.result_limit;
-        const service = new splunkjs.Service({sessionKey: definition.metadata["session_key"]});
+        var comic = definition.parameters.comic;
+        var result_limit = definition.parameters.result_limit;
+        var service = new splunkjs.Service({sessionKey: definition.metadata["session_key"]});
 
         if (result_limit < 1) {
             done(new Error("The minimum amount of results allowed is 1."));
@@ -56,7 +56,7 @@
 
         getPasswords(service).then(function(passwords) {
 
-            const marvel = new Marvel({
+            var marvel = new Marvel({
                 publicKey: passwords["public_key"],
                 privateKey: passwords["private_key"]
             });
@@ -69,7 +69,6 @@
                     if (err) {
                         Logger.error(name, "A validation error occurred: " + err.message);
                         callback(err);
-                        return;
                     }
                     else {
                         Logger.info("Response: ", res);
@@ -86,20 +85,20 @@
     };
 
     exports.streamEvents = function (name, singleInput, eventWriter, done) {
-        const checkpointDir = this._inputDefinition.metadata["checkpoint_dir"];
-        const comic = singleInput.comic;
-        const result_limit = singleInput.result_limit;
-        const service = new splunkjs.Service({sessionKey: this._inputDefinition.metadata["session_key"]});
+        var checkpointDir = this._inputDefinition.metadata["checkpoint_dir"];
+        var comic = singleInput.comic;
+        var result_limit = singleInput.result_limit;
+        var service = new splunkjs.Service({sessionKey: this._inputDefinition.metadata["session_key"]});
 
         getPasswords(service).then(function(passwords) {
 
-            const marvel = new Marvel({
+            var marvel = new Marvel({
                 publicKey: passwords["public_key"],
                 privateKey: passwords["private_key"]
             });
 
-            let alreadyIndexed = 0;
-            let errorFound = false;
+            var alreadyIndexed = 0;
+            var errorFound = false;
 
             marvel.comics
                 .title(comic)
@@ -111,9 +110,9 @@
                         return;
                     }
 
-                    const checkpointFile = path.join(checkpointDir, comic + ".txt");
-                    let checkpointFileNewContents = "";
-                    let checkpointFileContents = "";
+                    var checkpointFile = path.join(checkpointDir, comic + ".txt");
+                    var checkpointFileNewContents = "";
+                    var checkpointFileContents = "";
 
                     Logger.info(name, "Retrieving Marvel comic information: " + res);
 
@@ -126,9 +125,9 @@
                         fs.appendFileSync(checkpointFile, "");
                     }
 
-                    for (let i = 0; i < res.length && !errorFound; i++) {
+                    for (var i = 0; i < res.length && !errorFound; i++) {
 
-                        const json = {
+                        var json = {
                             id: res[i].id,
                             title: res[i].title,
                             modified: res[i].modified,

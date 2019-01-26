@@ -184,7 +184,7 @@ define([
          */
         getAppConfig: function () {
 
-            const promise = new $.Deferred();
+            var promise = new $.Deferred();
             // Use the current app if the app name is not defined
             if (this.app_name === null || this.app_name === undefined) {
                 this.app_name = mvc_utils.getCurrentApp();
@@ -198,7 +198,7 @@ define([
                     this.is_app_configured = model.entry.associated.content.attributes.configured;
                     promise.resolve()
                 },
-                error: () => {
+                error: function () {
                     promise.reject();
                 }
             });

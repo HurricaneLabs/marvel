@@ -53,48 +53,58 @@ define([
         },
 
         handleSubmittedData: function() {
-            this.deleteEncryptedCredential('public_key', true).then(() => {
-                this.deleteEncryptedCredential('private_key', true).then(() => {
-                    this.saveEncryptedCredential('public_key', this.model.get("public_key"), "");
-                    this.saveEncryptedCredential('private_key', this.model.get("private_key"), "");
-                    this.setConfigured().then(() => { this.showSuccessMessage(); },
-                        (reason) => {
+            var that = this;
+            that.deleteEncryptedCredential('public_key', true).then(function () {
+                that.deleteEncryptedCredential('private_key', true).then(function () {
+                    that.saveEncryptedCredential('public_key', that.model.get("public_key"), "");
+                    that.saveEncryptedCredential('private_key', that.model.get("private_key"), "");
+                    that.setConfigured().then(function () { that.showSuccessMessage(); },
+                        function (reason) {
                             console.error('Unable to set app as configured. Reason: ', reason);
                         });
-                }, (reason) => {
+                }, function (reason) {
                     console.error('Unable to delete private key. Reason: ', reason);
                 });
-            }, (reason) => {
+            }, function (reason) {
                 console.error('Unable to delete public key. Reason: ', reason);
             });
         },
 
         validateFields: function(fields) {
-            fields.forEach((field) => {
-                let field_name = Object.keys(field);
-                let field_value = this.model.get(Object.keys(field));
-                let field_error = Object.values(field)[0];
-                let attribute = {};
+            var has_errors = false;
+
+            fields.forEach(function (field) {
+                var field_name = Object.keys(field);
+                var field_value = this.model.get(Object.keys(field));
+                var field_error = Object.values(field)[0];
+                var attribute = {};
+                console.log("field_value ", field_value);
                 field_value === "" ?
                     (
                         attribute[field_name+"_error"] = field_error,
-                        this.model.set({ "field_errors" : true })
+                        has_errors = true
                     ) :
                     (
-                        attribute[field_name+"_error"] = "",
-                        this.model.set({ "field_errors" : false })
+                        attribute[field_name+"_error"] = ""
                     );
                 // attribute expands to this.model.set(<public|private>_key_error : <field_error>)
                 // We do this since we are attempting to dynamically set the model's object value
                 this.model.set(attribute);
-            });
+            }.bind(this));
+
+            if(has_errors) {
+                this.model.set({ "field_errors" : true });
+            } else {
+                this.model.set({ "field_errors" : false })
+            }
+
         },
 
         submitData: function (e) {
 
             e.preventDefault();
 
-            let fields = [
+            var fields = [
                 { 'public_key' : 'You must provide an public key.' },
                 { 'private_key' : 'You must provide a private key.' },
             ];
@@ -134,12 +144,15 @@ define([
         },
 
         showSuccessMessage: function () {
+
+            var that = this;
+
             $(document).find(".success")
                 .delay(1000)
                 .fadeIn(1000)
                 .delay(2000)
-                .fadeOut(1000, () => {
-                    this.setConfiguredModel();
+                .fadeOut(1000, function () {
+                    that.setConfiguredModel();
                 });
         },
 
@@ -158,7 +171,7 @@ define([
             }
 
             //Check if the app is configured
-            this.getAppConfig().then(() => {
+            this.getAppConfig().then(function () {
                 if (this.is_app_configured && !this.model.get("reset")) {
                     //The app is configured so get the credentials
                     this.setConfiguredModel();
@@ -166,7 +179,7 @@ define([
                 } else {
                     this.$el.html(_.template(SettingsTemplate, this.model.toJSON()));
                 }
-            }, (error) => {
+            }.bind(this), function(error) {
                 console.log('Error getting app configuration state. Reason: ', error);
             });
 
