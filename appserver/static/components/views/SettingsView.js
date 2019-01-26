@@ -53,12 +53,19 @@ define([
         },
 
         handleSubmittedData: function() {
-            this.deleteEncryptedCredential('public_key', true).done(() => {
-                this.deleteEncryptedCredential('private_key', true).done(() => {
+            this.deleteEncryptedCredential('public_key', true).then(() => {
+                this.deleteEncryptedCredential('private_key', true).then(() => {
                     this.saveEncryptedCredential('public_key', this.model.get("public_key"), "");
                     this.saveEncryptedCredential('private_key', this.model.get("private_key"), "");
-                    this.setConfigured().done(() => { this.showSuccessMessage(); });
+                    this.setConfigured().then(() => { this.showSuccessMessage(); },
+                        (reason) => {
+                            console.error('Unable to set app as configured. Reason: ', reason);
+                        });
+                }, (reason) => {
+                    console.error('Unable to delete private key. Reason: ', reason);
                 });
+            }, (reason) => {
+                console.error('Unable to delete public key. Reason: ', reason);
             });
         },
 
@@ -108,6 +115,7 @@ define([
                 "private_key": "<encrypted>",
                 "reset" : false,
                 "is_configured": true,
+                "updating": false
             });
         },
 
@@ -132,31 +140,25 @@ define([
                 .delay(2000)
                 .fadeOut(1000, () => {
                     this.setConfiguredModel();
-                    this.model.set({ "updating" : false }); // Done updating and no longer in reset mode
                 });
         },
 
         setPublicKey: function () {
-
             this.model.set({"public_key": $(document).find('#public_key').val()}, {silent: true});
-
         },
 
         setPrivateKey: function () {
-
             this.model.set({"private_key": $(document).find('#private_key').val()}, {silent: true});
-
         },
 
         render: function () {
-
             if (this.model.get("initial_load")) {
                 this.$el.html(`<p>Loading page setup...</p>`);
                 this.model.set({ "initial_load" : false }, { silent : true }); // Silent means do not re-render
             }
 
             //Check if the app is configured
-            this.getAppConfig().done(() => {
+            this.getAppConfig().then(() => {
                 if (this.is_app_configured && !this.model.get("reset")) {
                     //The app is configured so get the credentials
                     this.setConfiguredModel();
@@ -164,6 +166,8 @@ define([
                 } else {
                     this.$el.html(_.template(SettingsTemplate, this.model.toJSON()));
                 }
+            }, (error) => {
+                console.log('Error getting app configuration state. Reason: ', error);
             });
 
             return this;
