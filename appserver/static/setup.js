@@ -1,7 +1,8 @@
 require.config({
     paths: {
         text: "../app/marvel/components/lib/text",
-        'MarvelTemplate' : '../app/marvel/components/templates/index.html'
+        'MarvelTemplate' : '../app/marvel/components/templates/index.html',
+        'SettingsView' : '../app/marvel/components/views/SettingsView'
     }
 });
 
@@ -11,15 +12,15 @@ require([
     "splunkjs/mvc",
     "jquery",
     "splunkjs/mvc/simplesplunkview",
-    '../app/marvel/components/views/SettingsView',
-    "text!MarvelTemplate",
-], function( _, Backbone, mvc, $, SimpleSplunkView, SettingsView, MarvelTemplate){
+    "SettingsView",
+    "text!MarvelTemplate"
+], function( _, Backbone, mvc, $, SimpleSplunkView, SettingsView, MarvelTemplate) {
 
     var MarvelView = SimpleSplunkView.extend({
 
         className: "MarvelSetupView",
 
-        el: '#MarvelIndexWrapper',
+        el: "#MarvelIndexWrapper",
 
         initialize: function() {
             this.render();
@@ -28,18 +29,19 @@ require([
         loadSettings: function() {
             new SettingsView({
                 id: "settingsView",
-                el: $('#MarvelComponentsWrapper')
+                el: $("#MarvelComponentsWrapper")
             }).render();
         },
 
         render: function() {
 
             document.title = "Marvel Setup";
-            $(this.$el).html(_.template(MarvelTemplate));
+            $(this.el).html(_.template(MarvelTemplate));
 
             this.loadSettings();
 
             return this;
+
         }
 
     });
