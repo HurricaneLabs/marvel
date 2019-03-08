@@ -1,30 +1,24 @@
 require.config({
     paths: {
-        text: "../app/marvel/components/lib/text",
+        text: '../app/marvel/components/lib/text',
         'SettingsTemplate': '../app/marvel/components/templates/settings.html',
         'SettingsModel': '../app/marvel/components/models/SettingsModel',
-        "SetupView": '../app/marvel/components/views/SetupView',
+        'SetupView': '../app/marvel/components/views/SetupView',
     }
 });
 
 define([
-    "underscore",
-    "backbone",
-    "splunkjs/mvc",
-    "jquery",
-    "SetupView",
-    "splunkjs/mvc/simplesplunkview",
-    "text!SettingsTemplate",
-    "SettingsModel",
-    "models/SplunkDBase",
-    "util/splunkd_utils"
-], function (
+    'underscore',
+    'backbone',
+    'jquery',
+    'SetupView',
+    'text!SettingsTemplate',
+    'SettingsModel',
+], function(
     _,
     Backbone,
-    mvc,
     $,
     SetupView,
-    SimpleSplunkView,
     SettingsTemplate,
     SettingsModel,
 ) {
@@ -33,41 +27,17 @@ define([
 
         className: "MarvelConfigView",
 
-        defaults: {
-            app_name: "marvel"
-        },
-
         events: {
-            "click #submitData": "submitData",
-            "click #resetData": "resetData",
-            "focusout #public_key": "setPublicKey",
-            "focusout #private_key": "setPrivateKey",
+            'click #submitData' : 'submitData',
+            'click #resetData' : 'resetData',
+            'focusout #public_key' : 'setPublicKey',
+            'focusout #private_key' : 'setPrivateKey'
         },
 
-        initialize: function () {
-            this.options = _.extend({}, this.defaults, this.options);
-            SetupView.prototype.initialize.apply(this, [this.options]);
-            this.initial_load = true;
+        initialize: function() {
             this.model = SettingsModel;
             this.listenTo(this.model, 'change', this.render);
-        },
-
-        handleSubmittedData: function() {
-            var that = this;
-            that.deleteEncryptedCredential('public_key', true).then(function () {
-                that.deleteEncryptedCredential('private_key', true).then(function () {
-                    that.saveEncryptedCredential('public_key', that.model.get("public_key"), "");
-                    that.saveEncryptedCredential('private_key', that.model.get("private_key"), "");
-                    that.setConfigured().then(function () { that.showSuccessMessage(); },
-                        function (reason) {
-                            console.error('Unable to set app as configured. Reason: ', reason);
-                        });
-                }, function (reason) {
-                    console.error('Unable to delete private key. Reason: ', reason);
-                });
-            }, function (reason) {
-                console.error('Unable to delete public key. Reason: ', reason);
-            });
+            SetupView.prototype.initialize.apply(this, [this.options]);
         },
 
         validateFields: function(fields) {
@@ -78,45 +48,79 @@ define([
                 var field_value = this.model.get(Object.keys(field));
                 var field_error = Object.values(field)[0];
                 var attribute = {};
-                console.log("field_value ", field_value);
-                field_value === "" ?
+
+                field_value === '' ?
                     (
+                        // field value is empty
                         attribute[field_name+"_error"] = field_error,
                         has_errors = true
                     ) :
                     (
+                        // field value is not empty
                         attribute[field_name+"_error"] = ""
                     );
-                // attribute expands to this.model.set(<public|private>_key_error : <field_error>)
-                // We do this since we are attempting to dynamically set the model's object value
                 this.model.set(attribute);
             }.bind(this));
 
             if(has_errors) {
                 this.model.set({ "field_errors" : true });
             } else {
-                this.model.set({ "field_errors" : false })
+                this.model.set({ "field_errors" : false });
             }
 
         },
 
-        submitData: function (e) {
+        handleSubmittedData: function() {
+            var self = this;
+            self.deleteEncryptedCredential('public_key', true)
+            .then(function () {
+                self.deleteEncryptedCredential('private_key', true)
+                .then(function() {
+                    self.saveEncryptedCredential('public_key', self.model.get('public_key'), '');
+                    self.saveEncryptedCredential('private_key', self.model.get('private_key'), '');
+                    self.setConfigured()
+                    .then(function () {
+                        self.showSuccessMessage();
+                    });
+                });
+            })
+        },
 
+        submitData: function(e) {
             e.preventDefault();
 
             var fields = [
-                { 'public_key' : 'You must provide an public key.' },
-                { 'private_key' : 'You must provide a private key.' },
+                { 'public_key' : 'You must provide a public key.' },
+                { 'private_key' : 'You must provide a private key.' }
             ];
 
-            // Run some basic validation
+            // validate the fields
             this.validateFields(fields);
 
-            // If there are no form errors
-            if (!this.model.get("field_errors")) {
+            // everything looks good, no validation errors
+            if(!this.model.get('field_errors')) {
+                // submitting the data
                 this.model.set({ "updating" : true });
                 this.handleSubmittedData();
             }
+        },
+
+        resetData: function(e) {
+            e.preventDefault();
+            this.setUnconfiguredModel();
+        },
+
+        showSuccessMessage: function() {
+            var self = this;
+
+            $('.success')
+                .delay(1000)
+                .fadeIn(1000)
+                .delay(2000)
+                .fadeOut(1000, function() {
+                    self.setConfiguredModel();
+                })
+
         },
 
         setConfiguredModel: function() {
@@ -135,56 +139,33 @@ define([
                 "public_key" : "",
                 "reset" : true,
                 "is_configured" : false,
+                "updating" : false
             });
         },
 
-        resetData: function (e) {
-            e.preventDefault();
-            this.setUnconfiguredModel();
-        },
-
-        showSuccessMessage: function () {
-
-            var that = this;
-
-            $(document).find(".success")
-                .delay(1000)
-                .fadeIn(1000)
-                .delay(2000)
-                .fadeOut(1000, function () {
-                    that.setConfiguredModel();
-                });
-        },
-
-        setPublicKey: function () {
+        setPublicKey: function() {
             this.model.set({"public_key": $(document).find('#public_key').val()}, {silent: true});
         },
 
-        setPrivateKey: function () {
+        setPrivateKey: function() {
             this.model.set({"private_key": $(document).find('#private_key').val()}, {silent: true});
         },
 
-        render: function () {
-            if (this.model.get("initial_load")) {
-                this.$el.html(`<p>Loading page setup...</p>`);
-                this.model.set({ "initial_load" : false }, { silent : true }); // Silent means do not re-render
-            }
+        render: function() {
 
-            //Check if the app is configured
-            this.getAppConfig().then(function () {
-                if (this.is_app_configured && !this.model.get("reset")) {
-                    //The app is configured so get the credentials
+            this.getAppConfig().then(function() {
+                if(this.is_app_configured && !this.model.get("reset")) {
                     this.setConfiguredModel();
                     this.$el.html(_.template(SettingsTemplate, this.model.toJSON()));
                 } else {
                     this.$el.html(_.template(SettingsTemplate, this.model.toJSON()));
                 }
-            }.bind(this), function(error) {
-                console.log('Error getting app configuration state. Reason: ', error);
-            });
+            }.bind(this));
 
             return this;
+
         }
+
     });
 
 });
