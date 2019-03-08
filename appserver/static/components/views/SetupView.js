@@ -96,16 +96,14 @@ define([
 	});
 
     var EncryptedCredential = SplunkDBaseModel.extend({
-        //overriding this to ensure it goes it the correct app context
-        url: "/servicesNS/nobody/marvel/storage/passwords/",
+        url: "/servicesNS/nobody/marvel/storage/passwords",
 	    initialize: function() {
 	    	SplunkDBaseModel.prototype.initialize.apply(this, arguments);
 	    }
 	});
 
 	var EncryptedCredentials = SplunkDsBaseCollection.extend({
-        //overriding this to ensure it goes it the correct app context
-	    url: "/servicesNS/nobody/marvel/storage/passwords/",
+	    url: "/servicesNS/nobody/marvel/storage/passwords",
         model: EncryptedCredential,
 	    initialize: function() {
 	      SplunkDsBaseCollection.prototype.initialize.apply(this, arguments);
@@ -180,30 +178,34 @@ define([
         },
 
         /**
-         * Get the app configuration. -- (Overriden -- added a Promise.)
+         * Get the app configuration.
          */
-        getAppConfig: function () {
+        getAppConfig: function(){
 
-            var promise = new $.Deferred();
+            var promise = jQuery.Deferred();
+
             // Use the current app if the app name is not defined
-            if (this.app_name === null || this.app_name === undefined) {
+            if(this.app_name === null || this.app_name === undefined){
                 this.app_name = mvc_utils.getCurrentApp();
             }
 
-            this.app_config = new AppConfig();
+	        this.app_config = new AppConfig();
 
             this.app_config.fetch({
                 url: splunkd_utils.fullpath('/servicesNS/nobody/system/apps/local/' + this.app_name),
-                success: (model, response, options) => {
+                success: function (model, response, options) {
+                    console.info("Successfully retrieved the app configuration");
                     this.is_app_configured = model.entry.associated.content.attributes.configured;
-                    promise.resolve()
-                },
+                    promise.resolve();
+                }.bind(this),
                 error: function () {
+                    console.warn("Unable to retrieve the app configuration");
                     promise.reject();
-                }
+                }.bind(this)
             });
 
             return promise;
+
         },
 
         /**
@@ -269,8 +271,8 @@ define([
             var setterName = 'set' + this.capitolizeFirstLetter(propertyName);
             var getterName = 'get' + this.capitolizeFirstLetter(propertyName);
 
-            if(this[setterName] === undefined){
-                this[setterName] = function(value){
+            if (this[setterName] === undefined) {
+                this[setterName] = function (value) {
                     if ($.type(value) == "string") {
                         value = value.trim();
                     }
@@ -292,7 +294,7 @@ define([
                 };
             }
 
-            if(this[getterName] === undefined) {
+            if (this[getterName] === undefined) {
                 this[getterName] = function () {
                     var sel = $(selector, this.$el);
                     if (sel.is(':checkbox')) {
@@ -383,8 +385,8 @@ define([
 	        this.encrypted_credential = new EncryptedCredential();
 
             // Fetch it
-                this.encrypted_credential.fetch({
-                    url: splunkd_utils.fullpath('/servicesNS/nobody/marvel/storage/passwords/' + encodeURIComponent(stanza)),
+            this.encrypted_credential.fetch({
+                url: splunkd_utils.fullpath('/servicesNS/nobody/marvel/storage/passwords/' + encodeURIComponent(stanza)),
                 success: function (model, response, options) {
                     console.info("Successfully retrieved the encrypted credential");
                     promise.resolve(model);
@@ -590,7 +592,7 @@ define([
 
                 // Otherwise, show a failure message
                 .fail(function(response){
-                    console.warn("Credential was not successfully updated");
+                    console.warn("Credential was not successfully updated, ", response);
 
                     promise.reject(response);
                 }.bind(this));
