@@ -4,8 +4,8 @@
         <p>Your settings were successfully updated.</p>
     </div>
     <div id="setupWrapper">
-	    <form id="setupForm" class="form-line" autocomplete="off">
-            <% if(public_key==="<encrypted>") { %>
+        <form id="setupForm" class="form-line" autocomplete="off">
+            <% if(public_key === "<encrypted>") { %>
                 <div class="control shared-controls-textcontrol control-default">
                     <label for="public_key">Public Key*</label>
                     <input type="password" disabled="true" class="form-control mb-6 mr-sm-2 mb-sm-0"
@@ -13,22 +13,23 @@
                 </div>
             <% } else { %>
                 <div class="control shared-controls-textcontrol control-default">
-                    <label for="public_key">Public Key*</label>
                     <input type="text"
-                        <% if (public_key_error) { %>
-                            class="form-control mb-6 mr-sm-2 mb-sm-0 red-border"
-                        <% } else { %>
-                            class="form-control mb-6 mr-sm-2 mb-sm-0"
-                        <% } %>
-                           id="public_key" name="public_key" placeholder="Public Key"
-                           <% if(updating) { %> disabled="disabled" <% } %>
-                           value="<%- public_key %>">
+                           id="public_key"
+                           name="public_key"
+                           placeholder="Public key"
+                           value="<%- public_key %>"
+                           <% if (public_key_error)  { %>
+                                class="form-control mb-6 mr-sm-2 mb-sm-0 red-border"
+                           <% } else { %>
+                                class="form-control mb-6 mr-sm-2 mb-sm-0"
+                           <% } %> >
                     <% if(public_key_error) { %>
                         <span class="input-error"><%- public_key_error %></span>
                     <% } %>
                 </div>
             <% } %>
-            <% if(private_key==="<encrypted>") { %>
+
+            <% if(private_key === "<encrypted>") { %>
                 <div class="control shared-controls-textcontrol control-default">
                     <label for="private_key">Private Key*</label>
                     <input type="password" disabled="true" class="form-control mb-6 mr-sm-2 mb-sm-0"
@@ -36,31 +37,32 @@
                 </div>
             <% } else { %>
                 <div class="control shared-controls-textcontrol control-default">
-                    <label for="private_key">Private Key*</label>
                     <input type="text"
-                        <% if (private_key_error) { %>
-                            class="form-control mb-6 mr-sm-2 mb-sm-0 red-border"
-                        <% } else { %>
-                            class="form-control mb-6 mr-sm-2 mb-sm-0"
-                        <% } %>
-                           id="private_key" name="private_key" placeholder="Private Key"
-                           <% if(updating) { %> disabled="disabled" <% } %>
-                           value="<%- private_key %>">
+                           id="private_key"
+                           name="private_key"
+                           placeholder="Private key"
+                           value="<%- private_key %>"
+                           <% if (private_key_error)  { %>
+                                class="form-control mb-6 mr-sm-2 mb-sm-0 red-border"
+                           <% } else { %>
+                                class="form-control mb-6 mr-sm-2 mb-sm-0"
+                           <% } %> >
                     <% if(private_key_error) { %>
                         <span class="input-error"><%- private_key_error %></span>
                     <% } %>
                 </div>
             <% } %>
+
             <% if(is_configured) { %>
                 <button type="submit" id="resetData" class="btn btn-primary">Reset</button>
             <% } else { %>
-            <button type="submit" id="submitData"
-                    class="btn btn-primary"
-                    <% if(updating) { %> disabled="disabled" <% } %>>
-                <% if(updating) { %> Submitting... <% } else { %> Submit <% } %>
-            </button>
+                <button type="submit"
+                        id="submitData"
+                        class="btn btn-primary"
+                        <% if(updating) { %> disabled="disabled" <% } %>>
+                    <% if(updating) { %> Submitting... <% } else { %> Submit <% } %>
+                </button>
             <% } %>
         </form>
-        <p class="help-block small">* required.</p>
     </div>
 </div>
