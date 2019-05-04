@@ -47,7 +47,7 @@
             .get(function (err, res) {
                 if (err) {
                     Logger.error(name, "A validation error occurred: " + err.message);
-                    callback(err);
+                    done(err);
                 } else {
                     if (res.length === 0) {
                         done(new Error("No results returned for that series," +
@@ -78,7 +78,7 @@
 
             marvel.characters.name(character).get(function (err, res) {
                 if (err) {
-                    callback(err);
+                    done(err);
                 }
 
                 var checkpointFilePath = path.join(checkpointDir, character + ".txt");
