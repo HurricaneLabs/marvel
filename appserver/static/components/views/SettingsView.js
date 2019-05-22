@@ -13,14 +13,14 @@ define([
     'jquery',
     'SetupView',
     'text!SettingsTemplate',
-    'SettingsModel',
+    'SettingsModel'
 ], function(
     _,
     Backbone,
     $,
     SetupView,
     SettingsTemplate,
-    SettingsModel,
+    SettingsModel
 ) {
 
     return SetupView.extend({

@@ -9,7 +9,7 @@
     var Scheme = ModularInputs.Scheme;
     var Argument = ModularInputs.Argument;
     var utils = ModularInputs.utils;
-    var MarvelPasswords = require('./marvel_passwords');
+    var MarvelPasswords = require("./marvel_passwords");
     var getPasswords = MarvelPasswords.GetPasswords;
 
     exports.getScheme = function () {
@@ -38,8 +38,8 @@
 
         getPasswords(service).then(function(passwords) {
             var marvel = new Marvel({
-                publicKey: passwords['public_key'],
-                privateKey: passwords['private_key']
+                publicKey: passwords["public_key"],
+                privateKey: passwords["private_key"]
             });
 
             marvel.characters
@@ -47,7 +47,7 @@
             .get(function (err, res) {
                 if (err) {
                     Logger.error(name, "A validation error occurred: " + err.message);
-                    callback(err);
+                    done(err);
                 } else {
                     if (res.length === 0) {
                         done(new Error("No results returned for that series," +
@@ -64,21 +64,21 @@
 
     exports.streamEvents = function (name, singleInput, eventWriter, done) {
         var checkpointDir = this._inputDefinition.metadata["checkpoint_dir"];
-        var service = new splunkjs.Service({ sessionKey : this._inputDefinition.metadata["session_key"] });
         var character = singleInput.character;
+        var service = new splunkjs.Service({ sessionKey : this._inputDefinition.metadata["session_key"] });
 
         getPasswords(service).then(function(passwords) {
             var marvel = new Marvel({
-                publicKey: passwords['public_key'],
-                privateKey: passwords['private_key']
+                publicKey: passwords["public_key"],
+                privateKey: passwords["private_key"]
             });
 
             var alreadyIndexed = 0;
             var errorFound = false;
 
             marvel.characters.name(character).get(function (err, res) {
-                if (err) {
-                    callback(err);
+                if(err) {
+                    done(err);
                 }
 
                 var checkpointFilePath = path.join(checkpointDir, character + ".txt");
@@ -87,7 +87,7 @@
 
                 try {
                     checkpointFileContents = utils.readFile("", checkpointFilePath);
-                } catch (e) {
+                } catch(e) {
                     fs.appendFileSync(checkpointFilePath, "");
                 }
 
@@ -101,7 +101,7 @@
                         thumbnail_extension: res[i].thumbnail.extension
                     };
 
-                    if (checkpointFileContents.indexOf(res[i].id += res[i].modified + "\n") < 0) {
+                    if (checkpointFileContents.indexOf(res[i].id + res[i].modified + "\n") < 0) {
                         try {
                             var event = new Event({
                                 stanza: character,
@@ -112,26 +112,25 @@
 
                             eventWriter.writeEvent(event);
 
-                            checkpointFileNewContents += res[i].id += res[i].modified + "\n";
+                            checkpointFileNewContents += res[i].id + res[i].modified + "\n";
 
                             Logger.info(name, "Added a new character: " + res[i].name);
 
-                        } catch (e) {
+                        } catch(e) {
                             errorFound = true;
-                            Logger.error(name, "An error occured: " + e.message);
+                            Logger.error(name, "An error occurred: " + e.message);
                             done(e);
                         }
                     } else {
                         alreadyIndexed++;
                     }
-
                 }
 
                 fs.appendFileSync(checkpointFilePath, checkpointFileNewContents);
 
-                if (alreadyIndexed > 0) {
+                if(alreadyIndexed > 0) {
                     Logger.info(name, "Skipped " + alreadyIndexed.toString() +
-                    " already indexed the character" + character);
+                    " already indexed the character " + character);
                 }
 
                 alreadyIndexed = 0;

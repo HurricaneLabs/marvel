@@ -1,9 +1,13 @@
 var Marvel = require('marvel');
+var fs = require("fs");
+
 
 const marvel = new Marvel({
     publicKey: '6e34f83f47f74a36e2a46aa0d2ce760e',
     privateKey: 'a37b4256130a08743953e48d28adf5f32f8b4c9c'
 });
+
+var checkpointFileNewContents = '';
 
 marvel.comics
     .title("infinity countdown")
@@ -11,18 +15,24 @@ marvel.comics
     .get(function (err, res) {
     if (err) {
         console.error('Error: ', err);
-        return;
     } else {
-        const data = {
-            id: res[0].id,
-            title: res[0].title,
-            issueNumber: res[0].issueNumber,
-            description: res[0].description,
-            thumbnail_path: res[0].thumbnail.path,
-            thumbnail_extension: res[0].thumbnail.extension
-        };
 
-        console.log(data);
+        for (var i = 0; i < res.length; i++) {
+            const data = {
+                id: res[i].id,
+                title: res[i].title,
+                issueNumber: res[i].issueNumber,
+                description: res[i].description,
+                thumbnail_path: res[i].thumbnail.path,
+                thumbnail_extension: res[i].thumbnail.extension
+            };
+
+            checkpointFileNewContents += res[i].id += res[i].modified + "\n";
+
+            console.log(data);
+            fs.appendFileSync("./sample.txt", checkpointFileNewContents);
+
+        }
 
     }
 });
