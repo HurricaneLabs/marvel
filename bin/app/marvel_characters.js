@@ -77,7 +77,8 @@
             var errorFound = false;
 
             marvel.characters.name(character).get(function (err, res) {
-                if(err) {
+
+                if (err) {
                     done(err);
                 }
 

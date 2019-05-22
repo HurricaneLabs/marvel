@@ -49,25 +49,31 @@
             done(new Error("The maximum amount of results allowed is 100."));
         }
 
-        var marvel = new Marvel({
-            publicKey: "<public_key>",
-            privateKey: "<private_key>"
-        });
 
-        marvel.comics
-        .title(comic)
-        .get(function (err, res) {
-            if (err) {
-                Logger.error(name, "A validation error occurred: " + err.message);
-                done(err);
-            } else {
-                if (res.length === 0) {
-                    done(new Error("No results returned for that comic," +
-                        " please try again."));
-                } else {
-                    done();
-                }
-            }
+        getPasswords(service).then(function(passwords) {
+
+            var marvel = new Marvel({
+                publicKey: passwords['public_key'],
+                privateKey: passwords['private_key']
+            });
+
+            marvel.comics
+                .title(comic)
+                .get(function (err, res) {
+                    if (err) {
+                        Logger.error(name, "A validation error occurred: " + err.message);
+                        done(err);
+                    } else {
+                        if (res.length === 0) {
+                            done(new Error("No results returned for that comic," +
+                                " please try again."));
+                        } else {
+                            done();
+                        }
+                    }
+                });
+        }).catch(function(err) {
+            done(new Error(err));
         });
 
     };
