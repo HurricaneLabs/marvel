@@ -6,7 +6,6 @@ define([
     var SettingsModel = Backbone.Model.extend({
 
         defaults: {
-            initial_load: true,
             public_key: "",
             public_key_error: "",
             private_key: "",

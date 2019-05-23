@@ -9,6 +9,8 @@
     var Scheme = ModularInputs.Scheme;
     var Argument = ModularInputs.Argument;
     var utils = ModularInputs.utils;
+    var MarvelPasswords = require("./marvel_passwords");
+    var getPasswords = MarvelPasswords.GetPasswords;
 
     exports.getScheme = function () {
         var scheme = new Scheme("Marvel Comics");
@@ -40,6 +42,7 @@
 
         var comic = definition.parameters.comic;
         var result_limit = definition.parameters.result_limit;
+        var service = new splunkjs.Service({ sessionKey : definition.metadata["session_key"] });
 
         if(result_limit < 1) {
             done(new Error("The minimum amount of results allowed is 1."));
@@ -83,77 +86,80 @@
         var comic = singleInput.comic;
         var result_limit = singleInput.result_limit;
 
-        var marvel = new Marvel({
-            publicKey: "<public_key>",
-            privateKey: "<private_key>"
-        });
+        getPasswords(service).then(function(passwords) {
 
-        var alreadyIndexed = 0;
-        var errorFound = false;
+            var marvel = new Marvel({
+                publicKey: passwords['public_key'],
+                privateKey: passwords['private_key']
+            });
 
-        marvel.comics.title(comic).limit(result_limit).get(function(err, res) {
+            var alreadyIndexed = 0;
+            var errorFound = false;
 
-            if(err) {
-                done(err);
-            }
+            marvel.comics.title(comic).limit(result_limit).get(function (err, res) {
 
-            var checkpointFilePath = path.join(checkpointDir, comic + ".txt");
-            var checkpointFileNewContents = "";
-            var checkpointFileContents = "";
-
-            try {
-                checkpointFileContents = utils.readFile("", checkpointFilePath);
-            } catch (e) {
-                fs.appendFileSync(checkpointFilePath, "");
-            }
-
-            for (var i = 0; i < res.length && !errorFound; i++) {
-                var json = {
-                    id: res[i].id,
-                    title: res[i].title,
-                    issueNumber: res[i].issueNumber,
-                    description: res[i].description,
-                    modified: res[i].modified,
-                    thumbnail_path: res[i].thumbnail.path,
-                    thumbnail_extension: res[i].thumbnail.extension
-                };
-
-                if (checkpointFileContents.indexOf(res[i].id + res[i].modified + "\n") < 0) {
-                    try {
-
-                        var event = new Event({
-                            stanza: comic,
-                            sourcetype: "marvel_comics",
-                            data: json,
-                            time: Date.now()
-                        });
-
-                        eventWriter.writeEvent(event);
-
-                        checkpointFileNewContents += res[i].id + res[i].modified + "\n";
-
-                        Logger.info(name, "Added a new comic: " + res[i].title);
-
-                    } catch (e) {
-                        errorFound = true;
-                        Logger.error(name, "An error occurred: " + e.message);
-                        done(e);
-                    }
-                } else {
-                    alreadyIndexed++;
+                if (err) {
+                    done(err);
                 }
 
-            }
+                var checkpointFilePath = path.join(checkpointDir, comic + ".txt");
+                var checkpointFileNewContents = "";
+                var checkpointFileContents = "";
 
-            fs.appendFileSync(checkpointFilePath, checkpointFileNewContents);
+                try {
+                    checkpointFileContents = utils.readFile("", checkpointFilePath);
+                } catch (e) {
+                    fs.appendFileSync(checkpointFilePath, "");
+                }
 
-            if(alreadyIndexed > 0) {
-                Logger.info(name, "Skipped " + alreadyIndexed.toString() +
-                " already indexed the comic " + comic);
-            }
+                for (var i = 0; i < res.length && !errorFound; i++) {
+                    var json = {
+                        id: res[i].id,
+                        title: res[i].title,
+                        issueNumber: res[i].issueNumber,
+                        description: res[i].description,
+                        modified: res[i].modified,
+                        thumbnail_path: res[i].thumbnail.path,
+                        thumbnail_extension: res[i].thumbnail.extension
+                    };
 
-            alreadyIndexed = 0;
+                    if (checkpointFileContents.indexOf(res[i].id + res[i].modified + "\n") < 0) {
+                        try {
 
+                            var event = new Event({
+                                stanza: comic,
+                                sourcetype: "marvel_comics",
+                                data: json,
+                                time: Date.now()
+                            });
+
+                            eventWriter.writeEvent(event);
+
+                            checkpointFileNewContents += res[i].id + res[i].modified + "\n";
+
+                            Logger.info(name, "Added a new comic: " + res[i].title);
+
+                        } catch (e) {
+                            errorFound = true;
+                            Logger.error(name, "An error occurred: " + e.message);
+                            done(e);
+                        }
+                    } else {
+                        alreadyIndexed++;
+                    }
+
+                }
+
+                fs.appendFileSync(checkpointFilePath, checkpointFileNewContents);
+
+                if (alreadyIndexed > 0) {
+                    Logger.info(name, "Skipped " + alreadyIndexed.toString() +
+                        " already indexed the comic " + comic);
+                }
+
+                alreadyIndexed = 0;
+
+            });
         });
 
     };
