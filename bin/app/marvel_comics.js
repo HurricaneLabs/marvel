@@ -85,6 +85,7 @@
         var checkpointDir = this._inputDefinition.metadata["checkpoint_dir"];
         var comic = singleInput.comic;
         var result_limit = singleInput.result_limit;
+        var service = new splunkjs.Service({ sessionKey : this._inputDefinition.metadata["session_key"] });
 
         getPasswords(service).then(function(passwords) {
 
