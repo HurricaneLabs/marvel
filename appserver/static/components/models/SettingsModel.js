@@ -1,7 +1,6 @@
 define([
     'backbone',
 ], function (Backbone) {
-    "use strict";
 
     var SettingsModel = Backbone.Model.extend({
 
