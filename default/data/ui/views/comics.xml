@@ -54,18 +54,4 @@
       </html>
     </panel>
   </row>
-  <row depends="$no_show$">
-    <panel>
-      <html>
-         <style>
-           div[data-view="views/shared/appbar/Master"] {
-             background-color: #eb2328;
-             }
-            div[data-role="underline"] {
-             background-color: #000000;
-            }
-         </style>
-       </html>
-    </panel>
-  </row>
 </form>
