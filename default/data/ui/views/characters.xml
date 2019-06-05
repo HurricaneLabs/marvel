@@ -45,13 +45,6 @@
       <html>
         <div id="other_characters"/>
         <div id="character_detail">
-          <div id="img_wrapper">
-            <img src="$image_tok$"/>
-          </div>
-          <div id="description">
-            <h2>$name_tok$</h2>
-            <p>$description_tok$</p>
-          </div>
         </div>
       </html>
     </panel>

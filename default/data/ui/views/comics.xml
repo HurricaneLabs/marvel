@@ -43,13 +43,6 @@
       <html>
         <div id="other_comics"/>
         <div id="comic_detail">
-          <div id="img_wrapper">
-            <img src="$image_tok$"/>
-          </div>
-          <div id="description">
-            <h2>$title_tok$</h2>
-            <p>$description_tok$</p>
-          </div>
         </div>
       </html>
     </panel>
