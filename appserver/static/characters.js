@@ -12,10 +12,8 @@ require([
 
     character_search_results.on("data", function() {
         var rows = character_search_results.data().rows;
-        console.log("rows ", rows);
         $('#character_detail').empty();
         rows.forEach(function (row) {
-            console.log('row ::: ', row);
             var html = '<div id="img_wrapper">' +
                         '<img src="' + row[0] + '"/>' +
                         '</div>' +
