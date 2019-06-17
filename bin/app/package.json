@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "marvel": "^1.1.0",
-    "splunk-sdk": "^1.8.4"
+    "marvel": "^1.1.2",
+    "splunk-sdk": "^1.9.0"
   }
 }
