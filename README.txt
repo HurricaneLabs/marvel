@@ -6,6 +6,7 @@ Copyright 2019 Hurricane Labs
 
 
 # Marvel for Splunk #
+- This repo corresponds with a Udemy course that covers building out this app: https://www.udemy.com/building-a-marvel-splunk-app
 - Comics are awesome and Splunk is awesome, so we've combined two awesome things into one! TOO MUCH POWER!
 - The purpose of this app is to provide a comprehensive overview of how to build a Splunk app!
 
