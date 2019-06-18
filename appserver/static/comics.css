@@ -1,3 +1,6 @@
+div[data-view="views/shared/appbar/Master"] {
+    background-color: #eb2328;
+}
 body, .dashboard-body {
     background-color: #202020;
 }
