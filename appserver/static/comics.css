@@ -62,6 +62,9 @@ h2, h3, label {
     -ms-transform: skew(5deg);
     transform: skew(5deg);
 }
+#comic_detail {
+    display: none;
+}
 #other_comics {
     display: none;
     float: right;

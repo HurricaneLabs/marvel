@@ -14,7 +14,7 @@
       </condition>
     </finalized>
   </search>
-  <search id="other_characters_search">
+  <search id="other_characters_search" depends="$image_tok$,$description_tok$">
     <query>
         sourcetype="marvel_characters" | eval thumbnail = thumbnail_path.".".thumbnail_extension  | table thumbnail, name | head [tstats count where sourcetype="marvel_characters" | eval random = (random() % count) + 1 | return $random] | tail 5
       </query>

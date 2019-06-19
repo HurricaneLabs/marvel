@@ -12,7 +12,7 @@
       </condition>
     </finalized>
   </search>
-  <search id="other_comics_search">
+  <search id="other_comics_search" depends="$image_tok$,$description_tok$">
     <query>
         sourcetype="marvel_comics" | eval thumbnail = thumbnail_path.".".thumbnail_extension  | table thumbnail, title | head [tstats count where sourcetype="marvel_comics" | eval random = (random() % count) + 1 | return $random] | tail 5
       </query>

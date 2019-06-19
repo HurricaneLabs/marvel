@@ -28,7 +28,7 @@ require([
 
     other_comics_results.on("data", function() {
         var rows = other_comics_results.data().rows;
-        $('#other_comics').empty().append('<h2>Check Out These Other Comics</h2>');
+        $('#other_comics').empty().append('<h2>Check Out These Other Characters</h2>');
         rows.forEach(function (row) {
             var url = row[0];
             var title = row[1];
@@ -51,7 +51,7 @@ require([
     });
 
     select_comics.on("change", function(val) {
-        submitted_tokens.unset('comic_name_tok');
+        submitted_tokens.unset('comic_title_tok');
         submitted_tokens.set('comic_title_tok', val);
         $('#comic_detail').fadeOut(1000);
         $('#other_comics').fadeOut(1000);

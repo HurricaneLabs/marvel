@@ -61,6 +61,9 @@ h2, h3, label {
     -ms-transform: skew(5deg);
     transform: skew(5deg);
 }
+#character_detail {
+    display: none;
+}
 #other_characters {
     display: none;
     float: right;
